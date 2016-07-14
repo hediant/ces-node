@@ -1,0 +1,8 @@
+{
+	"name":"historian",
+	"enable":true,
+	"server" : "http://localhost:8001",
+	"max_queue_len" : 500,
+	"max_data_count" : 50000,
+	"time_to_push" : 5000	
+}
