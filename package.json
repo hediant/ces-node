@@ -1,34 +1,31 @@
 {
-	"name":"athena-ces",
-	"description":"Calculation Engine Services",
-	"version":"0.0.1",
-	"private":true,
-	"author":"David Hediant <hediant@gmail.com>",
-	"contributors":[
-	],
-	"keywords":[
-		"event handle",
-		"cep",
-		"event stream"
-	],
-	"dependencies":{
-		"minimist":"1.1.0",
-		"async":"0.9.0",
-		"consistent-hashing":"0.2.3",
-		"log4js":"0.6.21",
-		"node-zookeeper-client":"0.2.1",
-		"watch.io":"1.0.4",
-		"redis":"0.12.1",
-		"hiredis":"0.1.17",
-		"socket.io":"1.1.0",
-		"socket.io-client":"1.1.0",
-		"sqlite3":"3.0.2",
-		"ali-mns" : "2.3.6",
-		"yagnus":"0.0.17",
-		"string":"3.1.1",
-		"promise" : "7.1.1"
-	},
-	"engines": {
-		"node": ">= 0.10.0"
-	}
+  "name": "athena-ces",
+  "description": "Calculation Engine Services",
+  "version": "0.0.1",
+  "private": true,
+  "author": "David Hediant <hediant@gmail.com>",
+  "contributors": [],
+  "keywords": [
+    "event handle",
+    "cep",
+    "event stream"
+  ],
+  "dependencies": {
+    "ali-mns": "2.3.6",
+    "async": "0.9.0",
+    "co": "^4.6.0",
+    "consistent-hashing": "0.2.3",
+    "log4js": "0.6.21",
+    "minimist": "1.1.0",
+    "node-zookeeper-client": "0.2.1",
+    "promise": "7.1.1",
+    "hiredis": "0.1.17",
+    "redis": "0.12.1",
+    "string": "3.1.1",
+    "watch.io": "1.0.4",
+    "yagnus": "0.0.17"
+  },
+  "engines": {
+    "node": ">= 0.10.0"
+  }
 }
