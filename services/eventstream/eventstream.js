@@ -3,8 +3,7 @@
  */
 
 var BaseService = require('../../common/baseservice')
-	, StreamAPI = require('../../../stream').StreamAPI
-	, async = require('async');
+	, StreamAPI = require('../../../common/event_stream_client');
 
 //
 // 事件处理器基类

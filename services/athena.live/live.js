@@ -4,10 +4,7 @@
 
 var BaseService = require('../../common/baseservice')
 	, redis = require('redis')
-	, Live = require('../../../live');
-
-var Values = Live.SystemValues;
-var Status = Live.SystemStatus;
+	, Live = require('../../../common/live');
 
 //
 // folder - string, 该服务所在的绝对路径
@@ -45,9 +42,7 @@ Snapshot.prototype.init = function() {
 	this.public_ = {
 		'setSystemValues':this.setSystemValues,
 		'setSystemsValues':this.setSystemsValues,
-		'getSystemValues':this.getSystemValues,
-		'setSystemStatus' : this.setSystemStatus,
-		'getSystemsStatus' : this.getSystemsStatus
+		'getSystemValues':this.getSystemValues
 	};
 
 	// 当初始化完成后，需要触发ready事件通知框架
@@ -80,7 +75,7 @@ Snapshot.prototype.doConnect = function(cb) {
 	this.redisClient_ = redis.createClient(port, addr,auth_pass);
 
 	// set connection
-	Live.setRedisConnection(this.redisClient_);
+	this.service_ = new Live(this.redisClient_);
 
 	//this.redisClient_ = redis.createClient(port, addr);
 	this.redisClient_.on('ready', function(){
@@ -132,8 +127,7 @@ Snapshot.prototype.setSystemValues = function(system_id, fields, cb){
 // item 必须包括{topic(string), fields(object)}
 // 
 Snapshot.prototype.setSystemsValues = function(event_queue, cb){
-	var service_ = Values;
-	service_.setSystemsValues(event_queue, cb);
+	this.service_.setSystemsValues(event_queue, cb);
 };
 
 // 
@@ -142,30 +136,14 @@ Snapshot.prototype.setSystemsValues = function(event_queue, cb){
 // cb - function(err, obj)
 // 
 Snapshot.prototype.getSystemValues = function() {
-	var service_ = Values;
 	switch(arguments.length){
 		case 2:
 			// system_id, callback
-			return service_.getSystemValues(arguments[0], arguments[1]);
+			return this.service_.getSystemValues(arguments[0], arguments[1]);
 		case 3:
 			// system_id, tag_names - array, callback
-			return service_.getSystemValues(arguments[0], arguments[1], arguments[2]);
+			return this.service_.getSystemValues(arguments[0], arguments[1], arguments[2]);
 		default:
 			cb && cb(null);
 	}
 };
-
-Snapshot.prototype.setSystemStatus = function(system_id, status, cb) {
-	var service_ = Status;
-	service_.setSystemStatus(system_id, status, cb);
-};
-
-Snapshot.prototype.getSystemsStatus = function(system_ids, cb) {
-	var service_ = Status;
-	service_.getSystemsStatus(system_ids, cb);
-};
-
-
-
-
-
