@@ -1,0 +1,19 @@
+{
+	"name":"messages",
+	"enable":true,
+	"server":{
+		"host" : "localhost",
+		"user" : "root",
+		"password" : "123456",
+		"database" : "thinglinx",
+		"connectionLimit" : 1,
+		"multipleStatements" : true
+	},
+	"mns":{
+	    "account_id" : "1937106107384200",
+	    "accesskey_id" : "kp74z938xM97OCnV",
+	    "accesskey_secret" : "WmMdAKOWdjm0dr5UHtssXFmNyjeqqC",
+	    "region" : "shenzhen",
+	    "topics" : ["ALARM","SERVICE"]
+	}
+}

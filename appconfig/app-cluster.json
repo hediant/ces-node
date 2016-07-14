@@ -1,0 +1,25 @@
+{
+	"cluster":true,
+	"broker":{
+		"capacity":100000,
+		"handlers":"ces/handlers",
+		"metainfo":"ces/metainfo",
+		"diagnosis" : true,
+		"diagnosis-interval":900000
+	},
+	"zookeeper":{
+		"conn" : [
+			{
+				"addr" : "localhost",
+				"port" : 2181
+			}
+		],
+		"sessionTimeout" : 5000,
+		"spinDelay" : 1000,
+		"retries" : 0
+	},
+	"services":{
+		"retry-secs":30,
+		"timeout":30
+	}
+}
