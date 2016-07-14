@@ -3,9 +3,6 @@
  */
 
 var BaseService = require('../../common/baseservice');
-var Info = require('../../../model_info');
-var InfoCache = Info.InfoCache;
-var SystemWatcher = Info.SystemWatcher;
 
 //
 // 事件处理器基类
@@ -38,61 +35,13 @@ Information.prototype.init = function() {
 		'createSystemWatcher' : this.createSystemWatcher
 	};
 
-	if (!this.initDbServer())
-		return;
-
-	this.info_cache_ = new InfoCache(this.config_.fetch_interval);
-	this.info_cache_.on('error', function(err){
-		logger.error("UPDATE INFORMATION ERROR: %s", err.message);
-	});
-
-	// begin subcribe 
-	this.info_cache_.sub();
-
-	// 
-	// NOTE:
-	//		重载SystemWatcher的getInfoCache方法
-	//		目的是自动响应info服务的重新载入，这个方法比在Watcher的instance中listen ‘ready’的方案性能高得多
-	//
-	SystemWatcher.prototype.getInfoCache = function(){
-		return self.info_cache_;
-	};
-
 	// Do NOT forget
 	this.emit('ready');
 
 };
 
-Information.prototype.initDbServer = function() {
-	var self = this;
-	if (!this.config_.server) {
-		this.emit('error', "BAD_CONFIG_SETTINGS");
-		return;
-	}
-
-	// create or reconnect
-	var pool_ = Info.createDbConnection(this.config_.server);
-	pool_.on('connect', function(){
-		logger.debug("service <%s> connect to database, %s.", this.name_, JSON.stringify(this.config_.server));
-	});
-
-	pool_.on('error', function(err){
-		logger.error("server <%s> error: %s", this.name_, err.message);
-
-		// re-connect ?
-		pool_.end();
-		self.initDbServer();
-	});
-
-	// return
-	return true;
-};
-
 Information.prototype.close = function() {
 	var self = this;
-
-	// close connection to db
-	Info.closeDbConnection();
 	logger.debug("service <%s> close connection to database.", self.name_);
 
 	// close stations cache
@@ -107,6 +56,67 @@ Information.prototype.close = function() {
 // @cb - function(err, station) 如果主题存在返回object，否则返回null。
 //
 Information.prototype.createSystemWatcher = function(system_id) {
-	var watcher = new SystemWatcher(this.info_cache_, system_id);
-	return watcher;
+	return {
+		"getSystem" : function (){
+			return {
+				"uuid" : system_id,
+				"name" : "${system name}",
+				"desc" : "${system description}",
+				"state" : 0,
+				"model" : "${thing model uuid}",
+				"ping_time":300000,	
+				"status" : 0,
+				"version" : 0,
+
+				"superview" : {
+					"fields" : [
+						{
+							"id" : "abc",
+							"name" : "tag_1",
+							"display_name" : "全球化字符串",
+							"type" : "Analog",
+							"default" : 0,
+							"connect" : "DEV_1.AI_0",
+							"fixed" : 2,
+							"meta" : null,
+							"unit" : "工程单位，最大8个字符",
+							"scale" : 1.0,
+							"deviation" : 0.0,
+							"save_log" : true,
+							"log_cycle" : 300000,
+							"log_type" : "Period",
+							"log_params" : null
+						},
+						{
+							"id" : "abd",
+							"name" : "tag_2",
+							"display_name" : "全球化字符串",
+							"type" : "Digital",
+							"default" : 0,
+							"connect" : "DEV_1.AI_1",
+							"fixed" : 2,
+							"meta" : null,
+							"unit" : "工程单位，最大8个字符",
+							"scale" : 1.0,
+							"deviation" : 0.0,
+							"save_log" : true,
+							"log_cycle" : 300000,
+							"log_type" : "Changed",
+							"log_params" : null			
+						}
+					],
+					"triggers" : [
+						{
+							"name" : "trigger_1",
+							"type" : "Once",
+							"topic" : "Alarm || Message Topic",
+							"conditions" : "conditions json",
+							"params" : "params json",
+							"origin" : "Cloud"
+						}
+					]
+				}
+			}
+		}
+	}
 };

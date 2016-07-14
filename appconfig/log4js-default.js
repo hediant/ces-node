@@ -1,3 +1,5 @@
+var path = require('path');
+
 module.exports = {
 	"appenders" : [
 		{
@@ -5,7 +7,7 @@ module.exports = {
 			"level" : "INFO",			
 			"appender" : {
 				"type" : "file",
-				"filename" : "ces/log/serv.log",
+				"filename" : path.join(__dirname, "../log/serv.log"),
 				"maxLogSize" : 1048576,
 				"backups" : 10
 			}

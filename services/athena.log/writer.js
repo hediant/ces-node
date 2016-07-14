@@ -95,3 +95,5 @@ function Writer(options){
 	this.run();
 }
 require('util').inherits(Writer, EventEmitter);
+
+module.exports = Writer;

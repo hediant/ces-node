@@ -5,7 +5,7 @@
 		"host" : "localhost",
 		"user" : "root",
 		"password" : "123456",
-		"database" : "thinglinx",
+		"database" : "athena",
 		"connectionLimit" : 1,
 		"multipleStatements" : true	
 	},

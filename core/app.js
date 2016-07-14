@@ -18,7 +18,7 @@ require('../utils/logger')
 function App(){
 	EventEmitter.call(this);
 
-	root = 'ces/';
+	root = path.join(__dirname, "../");
 	// default app config path
 	this.app_config_path_ = path.join(root, 'appconfig/app.json');
 	// default services path
