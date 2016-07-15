@@ -2,8 +2,8 @@
 	"cluster":true,
 	"broker":{
 		"capacity":100000,
-		"handlers":"ces/handlers",
-		"metainfo":"ces/metainfo",
+		"handlers":"handlers",
+		"metainfo":"metainfo",
 		"diagnosis" : true,
 		"diagnosis-interval":900000
 	},

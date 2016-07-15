@@ -1,6 +1,7 @@
 var EventEmitter = require('events').EventEmitter
 	, LobsterClient = require('../../../common/lobster_client')
-	, Topic = require('../../../common/topic');
+	, Topic = require('../../../common/topic')
+	, moment = require('moment');
 
 function Writer(options){
 	EventEmitter.call(this);
@@ -36,11 +37,13 @@ function Writer(options){
 			var start = Date.now();
 			client_.append(queue, function (err, ret){
 				var end = Date.now();
+				/*
 				console.log("[%s] Write records:%s, cost:%s ms, status:%s.",
 					moment().format("YYYY-MM-DD HH:mm:ss"),
 					calc_sum_(queue),
 					(end - start),
 					err ? (err.message ? err.message : err.code) : "OK");
+				*/
 			});			
 		})();
 
@@ -79,9 +82,6 @@ function Writer(options){
 			clearInterval(timer_);
 
 		timer_ = setInterval(function(){
-			console.log("=================================================================");
-			console.log("[%s] Time to check queue.", moment().format("YYYY-MM-DD HH:mm:ss"));
-
 			commit_(queue_);
 		}, commit_cycle_);
 	}

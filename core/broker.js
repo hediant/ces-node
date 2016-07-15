@@ -21,11 +21,14 @@ module.exports = EventBroker;
 EventBroker.prototype.constructor = EventBroker;
 
 EventBroker.prototype.configure = function(config) {
+	this.root_path_ = path.join(__dirname, "../");
+	this.config_path = path.join(this.root_path_, "config");
+
 	this.capacity_ = config.capacity || 100000;
-	this.handler_folder_ = config.handlers || 'ces/handlers';
+	this.handler_folder_ = path.join(this.root_path_, config.handlers || 'handlers');
 	
 	// init meta information
-	this.meta_folder_ = config.metainfo || 'ces/metainfo';
+	this.meta_folder_ = path.join(this.root_path_, config.metainfo || 'metainfo');
 	this.metainfo_ = new MetaInfo(this.meta_folder_);
 
 	this.cache_ = new Cache(this.capacity_);
@@ -183,7 +186,7 @@ EventBroker.prototype.closeHandler = function(topic, handler) {
 // handler_name - string
 //
 EventBroker.prototype.loadHandlerLocally = function(topic, event_class, handler_name) {
-	var res = path.join(process.cwd(), this.handler_folder_, handler_name);
+	var res = path.join(this.handler_folder_, handler_name);
 	try{
 		var HandlerType = require(res);
 		var handler = {
