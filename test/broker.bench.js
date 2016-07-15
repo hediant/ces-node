@@ -26,8 +26,8 @@ services.preload(function(){
 	var broker = new Broker(recv, sender, services);
 	broker.configure({
 		"capacity":100000,
-		"handlers":"../handlers",
-		"metainfo":"../metainfo",
+		"handlers":"/handlers",
+		"metainfo":"/metainfo",
 		"diagnosis" : true
 	});	// use default
 	broker.run();
