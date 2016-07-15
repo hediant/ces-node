@@ -26,9 +26,9 @@ BenchHandler.prototype.constructor = BenchHandler;
 BenchHandler.prototype.handleEvent = function(topic, fields) {
 	// TODO
 	// Add your own functions here
-	var snapshot = this.services.get('athena.snapshot');
+	var snapshot = this.services.get('athena.live');
 	if (snapshot && snapshot.isEnabled()){
-		snapshot.push(topic, fields, function(err, ret){
+		snapshot.setSystemValues(topic, fields, function(err, ret){
 			if (err) {
 				console.log(err);
 			}

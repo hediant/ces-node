@@ -27,9 +27,9 @@ ForSequenceTestHandler.prototype.handleEvent = function(topic, fields) {
 	// TODO
 	// Add your own functions here
 	var self = this;
-	var snapshot = this.services.get('athena.snapshot');
+	var snapshot = this.services.get('athena.live');
 	if (snapshot && snapshot.isEnabled()){
-		snapshot.push(topic, fields, function(err, ret){
+		snapshot.setSystemValues(topic, fields, function(err, ret){
 			if (err) {
 				console.log(err);
 			}

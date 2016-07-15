@@ -14,7 +14,7 @@ function ExampleHandler(topic, broker){
 	});
 
 	// 创建滑动时间窗口
-	this.stw_ = new STW(topic, this.services, 30*1000);
+	this.stw_ = new STW(topic, this.services, 30 * 1000);
 
 };
 require('util').inherits(ExampleHandler, BaseHandler);
@@ -42,19 +42,12 @@ ExampleHandler.prototype.handleEvent = function(topic, fields) {
 	// 滑动时间窗口
 	console.log('SlideTimeWindow');
 	console.log(this.stw_.getSeries());
-	 //邮件通知
-	 var message = {
-		"subject":"subject",
-		"text":"hello world"
-	}
-	 var msgcenter = this.services.get("messagecenter");
 	
 	//
 	// 发射事件DEMO
 	// 需要特别注意如下的写法，否则将会陷入无尽的循环中
 	//
 	if (topic != 'test_fire') {
-		//this.services.get('eventstream').fire('test_fire', "demo", {'average':10});
 		this.sender.fire('test_fire', "demo", {'average':10});
 	}
 
@@ -63,21 +56,4 @@ ExampleHandler.prototype.handleEvent = function(topic, fields) {
 	// 不要忘记实现滑动
 	//
 	this.stw_.slide(topic, fields.data, fields.recv);
-
-	// 快照服务 
-	var self = this
-		, snapshot = this.services.get('athena.snapshot');
-	if (snapshot.isEnabled()){
-		console.log('Snapshot');
-		snapshot.push(topic, fields, function(err, ret){
-			snapshot.get(topic, function(err, ret){
-				console.log();
-				console.log('Read <' + topic + '> from snapshot. ');
-				console.log({
-					'error' : err,
-					'data' : ret
-				});
-			});
-		});		
-	}
 };
