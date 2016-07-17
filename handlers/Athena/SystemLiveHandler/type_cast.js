@@ -1,24 +1,15 @@
-module.exports = function (tag, data){
-	var val = data[tag.name];
-	switch (tag.type){
-		case "Enumeration":
-		case "Digital":
-			return Math.floor(val);
-		case "Analog":
+module.exports = function (val, type){
+	switch (type){
+		case "NUMBER":
 			return Number(val);
-		case "String":
-			return val ? String(val) : "";
-		case "Object":
-			try {
-				return JSON.parse(val);
-			}
-			catch(e){
-				return null;
-			}
-		case "Buffer":
-		case "Array":
-		case "Date":
+		case "INTEGER":
+			return parseInt(val);
+		case "BOOLEAN":
+			return Boolean(val);
+		case "STRING":
+		case "LOCATION":
+		case "DATETIME":
 		default :
-			return null;
+			return val;
 	}
 };

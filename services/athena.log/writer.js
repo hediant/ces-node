@@ -29,21 +29,24 @@ function Writer(options){
 		return count;
 	}
 
-	var commit_ = function (queue){
+	var commit_ = function (){
+		var queue = queue_;
 		if (!queue.length)
 			return;
+
+		queue_ = [];
 
 		(function (){
 			var start = Date.now();
 			client_.append(queue, function (err, ret){
 				var end = Date.now();
-				/*
+
 				console.log("[%s] Write records:%s, cost:%s ms, status:%s.",
 					moment().format("YYYY-MM-DD HH:mm:ss"),
 					calc_sum_(queue),
 					(end - start),
 					err ? (err.message ? err.message : err.code) : "OK");
-				*/
+
 			});			
 		})();
 
@@ -71,8 +74,7 @@ function Writer(options){
 
 		data_count_ += Object.keys(data).length;
 		if (queue_.length >= max_queue_len_ || data_count_ >= max_data_count_){
-			commit_(queue_);
-			queue_ = [];
+			commit_();
 			data_count_ = 0;
 		}
 	}
@@ -82,7 +84,7 @@ function Writer(options){
 			clearInterval(timer_);
 
 		timer_ = setInterval(function(){
-			commit_(queue_);
+			commit_();
 		}, commit_cycle_);
 	}
 

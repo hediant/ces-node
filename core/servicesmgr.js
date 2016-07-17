@@ -170,6 +170,7 @@ function ServiceWrapper(folder, servicename, option){
 
 			emitter_.emit('ready');
 		});
+		
 		instance_.on('error', function(message){
 			enabled_ = false;
 			logger.error('Service <%s> error. %s', servicename, JSON.stringify(message));

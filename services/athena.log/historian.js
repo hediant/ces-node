@@ -73,5 +73,6 @@ HistorianLog.prototype.close = function() {
 	@timestamp - number
 */
 HistorianLog.prototype.append = function(system_uuid, data, timestamp, cb) {
-	this.service_.append(system_uuid, data, timestamp, cb);
+	this.service_.append(system_uuid, data, timestamp);
+	cb && cb();
 };
