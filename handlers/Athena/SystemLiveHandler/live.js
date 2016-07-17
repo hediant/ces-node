@@ -93,7 +93,7 @@ SystemLiveHandler.prototype.handleEvent = function (topic, fields) {
 		var his_data = self.the_system_.historic();
 		if (his_data){
 			/*
-			console.log("== HISTORIC ==")
+			console.log("===== HISTORIC =====")
 			console.log(self.the_system_.historic());			
 			*/
 			yield self.saveLog(system_id, his_data, ts);
