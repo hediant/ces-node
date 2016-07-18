@@ -59,6 +59,10 @@ SystemLiveHandler.prototype.handleEvent = function (topic, fields) {
 	co(function *(){
 		var system_id = Topic.systemUuid(topic);
 		var sys_info = yield Async(self.watcher_, self.watcher_.getSystem).exec();
+		if (!sys_info){
+			// system NOT exist
+			return self.nextEvent();
+		}
 
 		// 判断the_system是否存在或者是否需要更新
 		if (!self.the_system_ || 
