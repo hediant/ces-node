@@ -65,7 +65,7 @@ Information.prototype.createSystemWatcher = function(system_id) {
 					"desc" : "${system description}",
 					"state" : 0,
 					"model" : "${thing model uuid}",
-					"ping_time":300000,	
+					"ping_time":300,	
 					"status" : 0,
 					"version" : 0,
 
@@ -84,8 +84,8 @@ Information.prototype.createSystemWatcher = function(system_id) {
 								"scale" : 1.0,
 								"deviation" : 0.0,
 								"save_log" : true,
-								"log_cycle" : 300000,
-								"log_type" : "Period",
+								"log_cycle" : 300,
+								"log_type" : "period",
 								"log_params" : null
 							},
 							{
@@ -101,8 +101,8 @@ Information.prototype.createSystemWatcher = function(system_id) {
 								"scale" : 1.0,
 								"deviation" : 0.0,
 								"save_log" : true,
-								"log_cycle" : 300000,
-								"log_type" : "Changed",
+								"log_cycle" : 300,
+								"log_type" : "changed",
 								"log_params" : null			
 							}
 						],

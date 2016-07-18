@@ -92,19 +92,20 @@ Attribute.prototype.needSave = function() {
 		return false;
 
 	switch(this.log_type){
-		case "Period":
+		case "period":
 			if (this.hasNewValue()){
 				// default to 300 secs
-				var cycle = parseInt(this.log_cycle) ? this.log_cycle : 300000;
+				var cycle = parseInt(this.log_cycle);
+				var cycle = cycle && cycle >= 60 ? cycle : 300;
 				var pair = this.getPair();
 				var duration = pair.ts - this.last_save_;
 
-				return duration >= cycle;
+				return duration >= cycle * 1000;
 			}
 			else{
 				return false;
 			}
-		case "Changed":
+		case "changed":
 			return this.hasChanged();
 		default:
 			return false;
