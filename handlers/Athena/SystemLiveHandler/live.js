@@ -59,8 +59,8 @@ SystemLiveHandler.prototype.handleEvent = function (topic, fields) {
 	co(function *(){
 		var system_id = Topic.systemUuid(topic);
 		var sys_info = yield Async(self.watcher_, self.watcher_.getSystem).exec();
-		if (!sys_info){
-			// system NOT exist
+		if (!sys_info || sys_info.state != 0){
+			// system NOT exist or not active
 			return self.nextEvent();
 		}
 
