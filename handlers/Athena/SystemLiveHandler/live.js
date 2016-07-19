@@ -24,6 +24,7 @@ function SystemLiveHandler (topic, broker) {
 	// has loaded last values
 	this.has_loaded_lastvalues_ = false;
 
+	// current system
 	this.the_system_ = null;
 };
 require('util').inherits(SystemLiveHandler, SequentialHandler);

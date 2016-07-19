@@ -26,8 +26,8 @@ function Attribute (info){
         "scale" : 1.0,
         "deviation" : 0.0,
         "save_log" : true,
-        "log_cycle" : 300000,
-        "log_type" : "Period",
+        "log_cycle" : 300,
+        "log_type" : "period",
         "log_params" : null
     }	
 */
@@ -43,7 +43,7 @@ Attribute.prototype.getSeries = function () {
 
 Attribute.prototype.setPair = function (value, timestamp) {
 	this.series_.push({
-		"val" : typeCast(value, this.type),
+		"val" : this.transform(value),
 		"ts" : timestamp
 	});
 
@@ -56,6 +56,16 @@ Attribute.prototype.setPair = function (value, timestamp) {
 
 	this.value_ = value;
 	this.new_ = true;
+};
+
+Attribute.prototype.transform = function(value) {
+	var val = typeCast(value, this.type);
+	if (this.type != "NUMBER" ||
+		isNaN(this.scale) ||
+		isNaN(this.deviation))
+		return val;
+
+	return val * this.scale + this.deviation;
 };
 
 Attribute.prototype.getValue = function() {
