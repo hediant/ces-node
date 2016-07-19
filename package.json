@@ -20,6 +20,7 @@
     "log4js": "0.6.21",
     "minimist": "1.1.0",
     "moment": "^2.14.1",
+    "mysql": "^2.11.1",
     "node-zookeeper-client": "0.2.1",
     "promise": "7.1.1",
     "q": "^1.4.1",

@@ -18,9 +18,6 @@ function SystemLiveHandler (topic, broker) {
 		self.removeAllListeners();
 	});
 
-	// create system watcher by system uuid
-	this.createWatcher(topic);
-
 	// has loaded last values
 	this.has_loaded_lastvalues_ = false;
 
@@ -32,34 +29,13 @@ SystemLiveHandler.prototype.constructor = SystemLiveHandler;
 
 module.exports = SystemLiveHandler;
 
-SystemLiveHandler.prototype.createWatcher = function (topic) {
-	var athena_info = this.services.get("athena.info");
-	if (!athena_info || !athena_info.isEnabled())
-		throw new Error("athena.info is not enabled");
-
-	var system_id = Topic.systemUuid(topic);
-
-	//
-	// NOTE:
-	//		if athena_info re-start, it will reset this watcher's
-	//		cache connection automatically.
-	//		we do NOT need listen 'ready' event of athena.info service.
-	//
-	var watcher = athena_info.createSystemWatcher(system_id);
-	this.watcher_ = watcher;
-};
-
 SystemLiveHandler.prototype.handleEvent = function (topic, fields) {
 	var self = this
 		, services = this.services;
 
-	if (!this.watcher_){
-		this.createWatcher(topic);
-	}
-
 	co(function *(){
 		var system_id = Topic.systemUuid(topic);
-		var sys_info = yield Async(self.watcher_, self.watcher_.getSystem).exec();
+		var sys_info = yield self.readSystem(system_id);
 		if (!sys_info || sys_info.state != 0){
 			// system NOT exist or not active
 			return self.nextEvent();
@@ -125,6 +101,26 @@ SystemLiveHandler.prototype.handleEvent = function (topic, fields) {
 		self.nextEvent();
 	});
 
+};
+
+SystemLiveHandler.prototype.readSystem = function(system_id) {
+	var self = this;
+	return Q.Promise((resolve, reject) => {
+		var service = self.services.get("athena.info");
+		if (service && service.isEnabled()){
+			service.readSystem(system_id, function (err, system_info){
+				if (err){
+					console.log("Read system %s err:%s.", system_id, err);
+					reject(err);
+				}
+				else
+					resolve(system_info);
+			})
+		}
+		else{
+			reject("Service athena.info is NOT enabled!");
+		}
+	})	
 };
 
 SystemLiveHandler.prototype.takeSnapshot = function(system_id, fields) {
