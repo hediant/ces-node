@@ -44,8 +44,17 @@ SystemLiveHandler.prototype.handleEvent = function (topic, fields) {
 		// 判断the_system是否存在或者是否需要更新
 		if (!self.the_system_ || 
 			self.the_system_.version < sys_info.version){
+			if (self.the_system_)
+				self.the_system_.release();
+
 			self.the_system_ = new System(sys_info);
+			self.the_system_.on('status', function (status){
+				self.writeSystemStatus(system_id, status);
+			});
 		}
+
+		// 更新状态
+		self.the_system_.fetchStatus({online : 1});
 
 		// 判断是否有数据需要处理
 		if (!fields || !fields.data)
@@ -158,6 +167,26 @@ SystemLiveHandler.prototype.saveLog = function(system_id, fields, timestamp) {
 		}
 		else{
 			console.log("Service athena.log is NOT enabled!");
+			resolve();
+		}
+	})
+};
+
+SystemLiveHandler.prototype.writeSystemStatus = function(system_id, status, cb) {
+	var self = this;
+	return Q.Promise((resolve, reject) => {
+		var service = self.services.get("athena.live");
+		if (service && service.isEnabled()){
+			service.setSystemStatus(system_id, status, function (err){
+				if (err){
+					console.log("System %s write status err:%s.", system_id, err);
+				}
+
+				resolve();
+			})
+		}
+		else{
+			console.log("Service athena.live is NOT enabled!");
 			resolve();
 		}
 	})

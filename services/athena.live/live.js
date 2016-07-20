@@ -40,9 +40,11 @@ Snapshot.prototype.init = function() {
 
 	// 需要公开访问的服务的方法在这里定义
 	this.public_ = {
-		'setSystemValues':this.setSystemValues,
-		'setSystemsValues':this.setSystemsValues,
-		'getSystemValues':this.getSystemValues
+		'setSystemValues' : this.setSystemValues,
+		'setSystemsValues' : this.setSystemsValues,
+		'getSystemValues' : this.getSystemValues,
+		'setSystemStatus' : this.setSystemStatus,
+		'getSystemStatus' : this.getSystemStatus
 	};
 
 	// 当初始化完成后，需要触发ready事件通知框架
@@ -146,4 +148,26 @@ Snapshot.prototype.getSystemValues = function() {
 		default:
 			cb && cb(null);
 	}
+};
+
+/*
+	status - object
+	{
+		online : 0 || 1
+	},
+	cb - function (err)
+*/
+Snapshot.prototype.setSystemStatus = function(system_id, status, cb) {
+	this.service_.setSystemStatus(system_id, status, cb);
+};
+
+/*
+	cb - function (err, status)
+		status - object
+		{
+			online : 0 || 1
+		}
+*/
+Snapshot.prototype.getSystemStatus = function(system_id, cb) {
+	this.service_.getSystemStatus(system_id, cb);
 };

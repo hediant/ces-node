@@ -1,4 +1,5 @@
-var Attribute = require('./attribute');
+var EventEmitter = require('events').EventEmitter
+	, Attribute = require('./attribute');
 
 /*
 	@info - object
@@ -49,10 +50,16 @@ var Attribute = require('./attribute');
 	}	
 */
 function System(info, handler){
+	EventEmitter.call(this);
+
 	var fields_ = {};
 
 	var snapshot_ = {};
 	var historic_ = {};
+	var status_ = {	"online" : 0, "ts" : 0 };
+	var timer_;
+	// 1 hour
+	var time_to_save_ = 1 *60 * 60 * 1000;
 
 	this.assign = function (info){
 		this.uuid = info.uuid;
@@ -71,6 +78,14 @@ function System(info, handler){
 
 	this.reset = function (){
 		snapshot_ = {}, historic_ = {};
+	}
+
+	this.release = function (){
+		this.reset();
+		if (timer_)
+			clearTimeout(timer_);
+
+		this.removeAllListeners();		
 	}
 
 	this.getAttribute = function (field_name){
@@ -124,11 +139,45 @@ function System(info, handler){
 			return null;
 	}
 
+	this.hasSatusChanged = function (status){
+		return status_.online != status.online; 
+	}
+
+	this.fetchStatus = function (status){
+		var now = Date.now();
+		if (this.hasSatusChanged(status)){
+			status_.online = status.online;
+			status_.ts = now;			
+			
+			this.emit("status", status_);
+			this.checkStatus();
+		}
+		else{
+			if (now - status_.ts >= this.time_to_save_){
+				status_.ts = now;
+				this.emit("status", status_);
+			}
+		}
+	}
+
+	this.checkStatus = function (){
+		var self = this;
+		var timeout = !isNaN(this.ping_time) && this.ping_time > 60 ? (this.ping_time * 1000) : (300 * 1000);
+		if (timer_)
+			clearTimeout(timer_);
+
+		timer_ = setTimeout(function (){
+			self.fetchStatus({online:0});
+		}, timeout);
+	}
+
 	this.notify = function (){
 		return [];
 	}
 
 	this.assign(info);
 }
+require('util').inherits(System, EventEmitter);
+System.prototype.constructor = System;
 
 module.exports = System;
