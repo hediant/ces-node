@@ -69,6 +69,7 @@ Information.prototype.close = function() {
 //
 Information.prototype.readSystem = function(system_uuid, cb) {
 	var self = this;
+/*
 	setImmediate(function (){
 		cb(null, {
 			"uuid" : system_uuid,
@@ -130,9 +131,9 @@ Information.prototype.readSystem = function(system_uuid, cb) {
 			}
 		})
 	});
-/*
+*/
 	this.system_cache_.get(system_uuid, function (err, result){
 		cb && cb(err, result);
 	});
-*/
+
 };
