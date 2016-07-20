@@ -75,7 +75,7 @@ Information.prototype.readSystem = function(system_uuid, cb) {
 			"uuid" : system_uuid,
 			"name" : "${system name}",
 			"desc" : "${system description}",
-			"state" : 0,
+			"state" : 1,
 			"model" : "${thing model uuid}",
 			"ping_time":300,	
 			"status" : 0,
