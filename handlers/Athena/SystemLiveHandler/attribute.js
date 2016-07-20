@@ -102,6 +102,9 @@ Attribute.prototype.needSave = function() {
 		return false;
 
 	switch(this.log_type){
+		case "raw":
+			if (this.hasNewValue())
+				return true;
 		case "period":
 			if (this.hasNewValue()){
 				// default to 300 secs
