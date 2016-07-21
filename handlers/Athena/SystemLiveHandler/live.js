@@ -56,6 +56,7 @@ SystemLiveHandler.prototype.handleEvent = function (topic, fields) {
 			self.the_system_ = new System(sys_info);
 			self.the_system_.on('status', function (status){
 				self.writeSystemStatus(system_id, status);
+				self.notify();
 			});
 
 			// 从snapshot库(redis)中装载上一次的值

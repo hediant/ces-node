@@ -236,6 +236,8 @@ function System(info, handler){
 			var check = trigger.doCheck();
 			if (check){
 				var msg = {
+					"trigger" : trigger.name,
+					"ts" : Date.now(),
 					"system_id" : self.uuid,
 					"system_name" : self.name,
 					"topic" : trigger.topic,

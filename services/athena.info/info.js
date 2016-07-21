@@ -73,7 +73,7 @@ Information.prototype.close = function() {
 //
 Information.prototype.readSystem = function(system_uuid, cb) {
 	var self = this;
-/*
+
 	setImmediate(function (){
 		cb(null, {
 			"uuid" : system_uuid,
@@ -143,15 +143,35 @@ Information.prototype.readSystem = function(system_uuid, cb) {
 							"fields" : ["tag_1"]
 						},
 						"origin" : "cloud"
-					}
+					},
+					{
+						"name" : "trigger_2",
+						"type" : "once",
+						"topic" : "offline alarm",
+						"conditions" : [
+					        {
+				                "verb" : null,
+				                "exp" : {
+			                        "left" : { "fn":"ONLINE_STATUS", "args":null },
+			                        "op" : "!=",
+			                        "right" : { "fn":null, "args":1 }
+				                }
+					        }
+						],
+						"params" : {
+							"class_id" : 0,
+							"severity" : 2
+						},
+						"origin" : "cloud"
+					}					
 				]
 			}
 		})
 	});
 
-*/
+/*
 	this.system_cache_.get(system_uuid, function (err, result){
 		cb && cb(err, result);
 	});
-
+*/
 };
