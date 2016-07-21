@@ -41,7 +41,11 @@ Information.prototype.init = function() {
 
 	this.pool_ = mysql.createPool(this.config_.server);
 	this.dbhelper_ = new DbHelper(this.pool_);
-	this.system_cache_ = new SystemCache(this.dbhelper_, this.config_.fetch_interval);
+	this.system_cache_ = new SystemCache(this.dbhelper_, {
+		"interval" : this.config_.fetch_interval,
+		"include_superview" : true,
+		"include_connector" : false
+	});
 
 	// Do NOT forget
 	this.emit('ready');
