@@ -18,9 +18,6 @@ function SystemLiveHandler (topic, broker) {
 		self.removeAllListeners();
 	});
 
-	// has loaded last values
-	this.has_loaded_lastvalues_ = false;
-
 	// current system
 	this.the_system_ = null;
 };
@@ -36,8 +33,17 @@ SystemLiveHandler.prototype.handleEvent = function (topic, fields) {
 	co(function *(){
 		var system_id = Topic.systemUuid(topic);
 		var sys_info = yield self.readSystem(system_id);
-		if (!sys_info || sys_info.state != 1){
+		if (!sys_info){
+			if (self.the_system_){
+				self.the_system_.release();
+				self.the_system_ = null;
+			}
+
 			// system NOT exist or not active
+			return self.nextEvent();
+		}
+
+		if (sys_info.state != 1){
 			return self.nextEvent();
 		}
 
@@ -51,6 +57,29 @@ SystemLiveHandler.prototype.handleEvent = function (topic, fields) {
 			self.the_system_.on('status', function (status){
 				self.writeSystemStatus(system_id, status);
 			});
+
+			// 从snapshot库(redis)中装载上一次的值
+			var last_values = yield self.loadFromSnapshot(system_id);
+			if (last_values){
+				// last_values是以id为key的
+				var attrs = self.the_system_.getAttributes();
+				for (var name in attrs){
+					var attr = attrs[name];					
+					var last = last_values[attr.id];
+					if (last){
+						// 将上一次的值写入到滑动时间窗口中
+						attr.setPair(last.val, last.ts);
+						attr.reset();
+					}
+				}
+
+				// 
+				// NOTE:
+				//   处理上一刻的报警状态(但是不要发通知)
+				//   这样, 当trigger.type=="once"的情况下, 不会因为the_system的重新载入而重复触发报警
+				//
+				self.the_system_.notify();
+			}			
 		}
 
 		// 更新状态
@@ -70,24 +99,13 @@ SystemLiveHandler.prototype.handleEvent = function (topic, fields) {
 		}
 
 		// 将数据写到快照中
-		var snap_data = self.the_system_.snapshort();
-		if (snap_data){
-			/*
-			console.log("===== SNAPSHOT =====")
-			console.log(self.the_system_.snapshort())
-			*/
-			yield self.takeSnapshot(system_id, snap_data);
-		}
+		yield self.takeSnapshot(system_id);
 
 		// 将数据写到历史库中,如果有需要保存历史的数据
-		var his_data = self.the_system_.historic();
-		if (his_data){
-			/*
-			console.log("===== HISTORIC =====")
-			console.log(self.the_system_.historic());			
-			*/
-			yield self.saveLog(system_id, his_data, ts);
-		}
+		yield self.saveLog(system_id, ts);
+
+		// 处理触发器, 如果满足条件发送通知
+		yield self.notify();
 
 		//
 		// NOTE:
@@ -132,12 +150,40 @@ SystemLiveHandler.prototype.readSystem = function(system_id) {
 	})	
 };
 
-SystemLiveHandler.prototype.takeSnapshot = function(system_id, fields) {
+SystemLiveHandler.prototype.loadFromSnapshot = function(system_id) {
 	var self = this;
 	return Q.Promise((resolve, reject) => {
 		var service = self.services.get("athena.live");
 		if (service && service.isEnabled()){
-			service.setSystemValues(system_id, fields, function (err){
+			service.getSystemValues(system_id, function (err, result){
+				if (err){
+					console.log("System %s load from snapshort err:%s.", system_id, err);
+					reject(err);
+				}
+
+				resolve(result);
+			})
+		}
+		else{
+			reject("Service athena.live is NOT enabled!");
+		}		
+	})
+};
+
+SystemLiveHandler.prototype.takeSnapshot = function(system_id) {
+	var self = this;
+	return Q.Promise((resolve, reject) => {
+		var service = self.services.get("athena.live");
+		if (service && service.isEnabled()){
+			var snap_data = self.the_system_.snapshort();
+			if (!snap_data){
+				return resolve();
+			}
+
+			// console.log("===== SNAPSHOT =====");
+			// console.log(snap_data);
+
+			service.setSystemValues(system_id, snap_data, function (err){
 				if (err){
 					console.log("System %s take snapshort err:%s.", system_id, err);
 				}
@@ -152,12 +198,20 @@ SystemLiveHandler.prototype.takeSnapshot = function(system_id, fields) {
 	})
 };
 
-SystemLiveHandler.prototype.saveLog = function(system_id, fields, timestamp) {
+SystemLiveHandler.prototype.saveLog = function(system_id, timestamp) {
 	var self = this;
 	return Q.Promise((resolve, reject) => {
 		var service = self.services.get("athena.log");
 		if (service && service.isEnabled()){
-			service.append(system_id, fields, timestamp, function (err){
+			var his_data = self.the_system_.historic();
+			if (!his_data){
+				return resolve();
+			}
+		
+			// console.log("===== HISTORIC =====")
+			// console.log(his_data);			
+						
+			service.append(system_id, his_data, timestamp, function (err){
 				if (err){
 					console.log("System %s save log err:%s.", system_id, err);
 				}
@@ -172,7 +226,7 @@ SystemLiveHandler.prototype.saveLog = function(system_id, fields, timestamp) {
 	})
 };
 
-SystemLiveHandler.prototype.writeSystemStatus = function(system_id, status, cb) {
+SystemLiveHandler.prototype.writeSystemStatus = function(system_id, status) {
 	var self = this;
 	return Q.Promise((resolve, reject) => {
 		var service = self.services.get("athena.live");
@@ -190,4 +244,17 @@ SystemLiveHandler.prototype.writeSystemStatus = function(system_id, status, cb) 
 			resolve();
 		}
 	})
+};
+
+SystemLiveHandler.prototype.notify = function() {
+	var self = this;
+	return Q.Promise((resolve, reject) => {
+		var notes = self.the_system_.notify();
+		if (notes && notes.length){
+			console.log("===== NOTIFY =====")
+			console.dir(notes, {depth:5});	
+		}
+
+		resolve();
+	});
 };

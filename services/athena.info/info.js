@@ -77,13 +77,13 @@ Information.prototype.readSystem = function(system_uuid, cb) {
 	setImmediate(function (){
 		cb(null, {
 			"uuid" : system_uuid,
-			"name" : "${system name}",
-			"desc" : "${system description}",
+			"name" : "My equipment",
+			"desc" : "My equipment's description",
 			"state" : 1,
-			"model" : "${thing model uuid}",
+			"model" : "abc",
 			"ping_time":300,	
 			"status" : 0,
-			"version" : 0,
+			"version" : 3,
 
 			"superview" : {
 				"fields" : [
@@ -125,16 +125,30 @@ Information.prototype.readSystem = function(system_uuid, cb) {
 				"triggers" : [
 					{
 						"name" : "trigger_1",
-						"type" : "Once",
-						"topic" : "Alarm || Message Topic",
-						"conditions" : "conditions json",
-						"params" : "params json",
-						"origin" : "Cloud"
+						"type" : "once",
+						"topic" : "Temperature HH alarm",
+						"conditions" : [
+					        {
+				                "verb" : null,
+				                "exp" : {
+			                        "left" : { "fn":"PV", "args":"tag_1" },
+			                        "op" : "<=",
+			                        "right" : { "fn":null, "args":200000 }
+				                }
+					        }
+						],
+						"params" : {
+							"class_id" : 0,
+							"severity" : 2,
+							"fields" : ["tag_1"]
+						},
+						"origin" : "cloud"
 					}
 				]
 			}
 		})
 	});
+
 */
 	this.system_cache_.get(system_uuid, function (err, result){
 		cb && cb(err, result);

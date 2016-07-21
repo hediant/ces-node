@@ -1,5 +1,6 @@
 var EventEmitter = require('events').EventEmitter
-	, Attribute = require('./attribute');
+	, Attribute = require('./attribute')
+	, Trigger = require('./trigger');
 
 /*
 	@info - object
@@ -53,6 +54,7 @@ function System(info, handler){
 	EventEmitter.call(this);
 
 	var fields_ = {};
+	var triggers_ = [];
 
 	var snapshot_ = {};
 	var historic_ = {};
@@ -62,17 +64,32 @@ function System(info, handler){
 	var time_to_save_ = 1 *60 * 60 * 1000;
 
 	this.assign = function (info){
+		var self = this;
 		this.uuid = info.uuid;
 		this.name = info.name;
 		this.state = info.state;
 		this.version = info.version;
-		this.ping_time = info.ping_time || 300000;
+		this.ping_time = !isNaN(info.ping_time) && info.ping_time > 60 ? info.ping_time : 300
 
-		// set attributes		
 		if (info && info.superview){
-			info.superview.fields.forEach(function (field){
-				fields_[field.name] = new Attribute(field);
-			});
+			// set attributes and datasource
+			if (Array.isArray(info.superview.fields)){
+				info.superview.fields.forEach(function (field){
+					fields_[field.name] = new Attribute(field);
+				});
+			}
+
+			// set triggers
+			if (Array.isArray(info.superview.triggers)){
+				info.superview.triggers.forEach(function (trigger_info){
+					try {
+						triggers_.push(new Trigger(self, trigger_info));
+					}
+					catch (err){
+						console.error("Bad trigger:%s, system:%s, error:%s.", trigger.name, self.uuid, err);
+					}
+				})
+			}
 		}
 	}
 
@@ -90,6 +107,30 @@ function System(info, handler){
 
 	this.getAttribute = function (field_name){
 		return fields_[field_name];
+	}
+
+	this.getAttributes = function (){
+		return fields_;
+	}
+
+	/*
+		datasource - object
+		{
+			"fields" : {
+				"field_1_name" : <object of Attribute>,
+				"field_2_name" : <object of Attribute>,
+				...
+			},
+			"status" : {
+				"online" : 0 || 1
+			}
+		}	
+	*/
+	this.getDatasource = function (){
+		return {
+			"fields" : fields_,
+			"status" : status_
+		};
 	}
 
 	this.setValue = function (field_name, value, timestamp){
@@ -162,17 +203,62 @@ function System(info, handler){
 
 	this.checkStatus = function (){
 		var self = this;
-		var timeout = !isNaN(this.ping_time) && this.ping_time > 60 ? (this.ping_time * 1000) : (300 * 1000);
 		if (timer_)
 			clearTimeout(timer_);
 
 		timer_ = setTimeout(function (){
 			self.fetchStatus({online:0});
-		}, timeout);
+		}, (self.ping_time * 1000));
 	}
 
+	/*
+		return of notify - array
+		[
+			{
+				"system_id" : "${system uuid}",
+				"system_name" : "${system name}",
+				"topic" : "${trigger.topic}",
+				"class_id" : "${trigger.params.class_id, 0 - 10}",
+				"severity" : "${trigger.params.severity, 1,2,3}",
+				"desc" : "${trigger.params.desc}",
+				"fields" : {
+					"field_1_name" : { "val":"${value}", "ts":"${timestamp}"},
+					"field_2_name" : { "val":"${value}", "ts":"${timestamp}"}
+				}	
+			}
+		] 
+	*/
 	this.notify = function (){
-		return [];
+		var self = this;
+		var nofications = [];
+
+		triggers_.forEach(function (trigger){
+			var check = trigger.doCheck();
+			if (check){
+				var msg = {
+					"system_id" : self.uuid,
+					"system_name" : self.name,
+					"topic" : trigger.topic,
+					"class_id" : trigger.params.class_id,
+					"severity" : trigger.params.severity,
+					"desc" : trigger.params.desc,
+					"fields" : {}
+				};
+
+				if (Array.isArray(trigger.params.fields)){
+					trigger.params.fields.forEach(function (field_name){
+						var attr = self.getAttribute(field_name);
+						if (attr){
+							msg.fields[field_name] = attr.getPair(field_name)
+						}
+					})
+				}
+
+				nofications.push(msg);
+			}
+		})
+
+		return nofications;
 	}
 
 	this.assign(info);
