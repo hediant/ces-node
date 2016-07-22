@@ -39,10 +39,10 @@ SystemLiveHandler.prototype.handleEvent = function (topic, fields) {
 				self.the_system_ = null;
 			}
 
-			// system NOT exist or not active
 			return self.nextEvent();
 		}
 
+		// system NOT exist or not active
 		if (sys_info.state != 1){
 			return self.nextEvent();
 		}
@@ -56,7 +56,6 @@ SystemLiveHandler.prototype.handleEvent = function (topic, fields) {
 			self.the_system_ = new System(sys_info);
 			self.the_system_.on('status', function (status){
 				self.writeSystemStatus(system_id, status);
-				self.notify();
 			});
 
 			// 从snapshot库(redis)中装载上一次的值

@@ -44,17 +44,3 @@ exports.PV = function(datasource, field_name){
 
 	return pv;
 };
-
-//
-// 获得系统的当前在线状态
-//
-exports.ONLINE_STATUS = function (datasource){
-	try {
-		var online = datasource.status.online;
-	}
-	catch (ex){
-		return 0;
-	}
-
-	return online;
-}
