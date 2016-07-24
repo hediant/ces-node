@@ -73,10 +73,11 @@ function System(info, handler){
 
 		if (info && info.superview){
 			// set attributes and datasource
-			if (Array.isArray(info.superview.fields)){
-				info.superview.fields.forEach(function (field){
+			if (info.superview.fields){
+				for (var key in info.superview.fields){
+					var field = info.superview.fields[key];
 					fields_[field.name] = new Attribute(field);
-				});
+				}
 			}
 
 			// set triggers
