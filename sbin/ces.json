@@ -1,0 +1,22 @@
+{
+	"apps" : [
+		{
+			"name" : "ces",
+			"script" : "../index.js",
+			"watch" : false,
+			"error_file" : "../log/ces-error.log",
+			"out_file" : "/dev/null", 
+			"max_restarts" : 10,
+			"max_memory_restart" : "3G",
+			"instances" : 1,
+			"kill_timeout" : 30000,
+			"node_args" : "--harmony",
+			"env": {
+				"NODE_ENV": "development",
+			},
+			"env_production" : {
+				"NODE_ENV": "production"
+			}
+		}
+	]
+}
