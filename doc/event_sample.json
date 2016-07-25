@@ -1,0 +1,22 @@
+{
+	"topic":"<topic_name>",
+	"class":"<event_type_name>",
+	"fields":{
+		"data":{
+			"tag1":"<tag1_value>",
+			"tag2":"<tag2_value>",
+			... ...
+		},
+		"status":{
+			"online":0||1
+		},
+		"recv":"<服务器接收时间，如：1412905743720>",
+		"source":"<源时间戳（或者设备时间戳）>",
+		"quality":{
+			"tag2":"BAD",
+			...
+		},
+		"sender":"<发送者ID>",
+		"server":"<服务器ID>"
+	}
+}

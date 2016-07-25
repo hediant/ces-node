@@ -1,0 +1,13 @@
+{
+	"name":"information",
+	"enable":true,
+	"server":{
+		"host" : "localhost",
+		"user" : "root",
+		"password" : "123456",
+		"database" : "athena",
+		"connectionLimit" : 1,
+		"multipleStatements" : true	
+	},
+	"fetch_interval":5000
+}
