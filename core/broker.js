@@ -44,14 +44,15 @@ EventBroker.prototype.run = function() {
 				if (handler){
 					handler.inst && handler.inst.emit('close');
 					self.cache_.remove(topic);
-				}			
+				}
 			}
 
 		});
 	});
 
 	// 开始监视handler文件夹
-	this.doWatch();
+	if (config.broker.watch)
+		this.doWatch();
 
 	// 开始监视诊断信息
 	this.diagnosis();
