@@ -1,5 +1,6 @@
-var BaseHandler = require('../BaseHandler')
-	, STW = require('../../common/slidingwindow').SlidingTimeWindow;
+var ces = require('ces');
+var BaseHandler = ces.BaseHandler
+	, STW = ces.SlidingTimeWindow;
 
 function ExampleHandler(topic, broker){
 	BaseHandler.call(this, topic, broker);

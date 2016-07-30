@@ -1,4 +1,5 @@
-var SequentialHandler = require('../SequentialHandler');
+var ces = require('ces');
+var SequentialHandler = ces.SequentialHandler;
 
 function ForSequenceTestHandler(topic, broker){
 	SequentialHandler.call(this, topic, broker);

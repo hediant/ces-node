@@ -1,0 +1,19 @@
+{
+  "name": "ces-project",
+  "description": "Project for Calculation Engine Services",
+  "version": "0.0.1",
+  "private": true,
+  "author": "David Hediant <hediant@gmail.com>",
+  "contributors": [],
+  "keywords": [
+    "event handle",
+    "cep",
+    "event stream"
+  ],
+  "dependencies": {
+    "rc": "^1.1.6"
+  },
+  "engines": {
+    "node": ">= 0.12.0"
+  }
+}

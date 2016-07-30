@@ -5,8 +5,8 @@
 var EventEmitter = require('events').EventEmitter
 	, ConsistentHashing = require('consistent-hashing');
 
-function EventReceiver(event_stream_service, applier){
-	this.event_stream_service_ = event_stream_service;
+function EventReceiver(event_stream, applier){
+	this.event_stream_ = event_stream;
 	this.applier_ = applier;
 
 	// for diagnosis
@@ -19,8 +19,8 @@ module.exports = EventReceiver;
 
 EventReceiver.prototype.init = function() {
 	var self = this;
-	if (!this.event_stream_service_ || 
-		!this.event_stream_service_.isEnabled()){
+	if (!this.event_stream_ || 
+		!this.event_stream_.isEnabled()){
 		logger.error('Event Streaming Error. Process must exit.');
 		process.exit(1);
 	}
@@ -39,7 +39,7 @@ EventReceiver.prototype.init = function() {
 	// 开始订阅事件
 	//
 	function dosub() {
-		self.event_stream_service_.sub(function(events){
+		self.event_stream_.sub(function(events){
 			self.dispose(events);
 		})
 	}
@@ -48,7 +48,7 @@ EventReceiver.prototype.init = function() {
 	// 特别注意：
 	// 当服务重新载入的时候，需要重新sub订阅发布服务
 	//
-	this.event_stream_service_.onReady(dosub);
+	this.event_stream_.onReady(dosub);
 
 };
 

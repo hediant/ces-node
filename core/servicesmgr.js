@@ -65,6 +65,9 @@ ServicesManager.create = function(host_path, config){
 			, serv_list = fs.readdirSync(host_path)
 			, msign = new MultiSignal();
 
+		if (!serv_list.length)
+			return cb && cb();
+		
 		msign.once('done', function(){
 			cb && cb();
 		});

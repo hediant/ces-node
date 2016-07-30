@@ -1,4 +1,5 @@
-var BaseHandler = require('../BaseHandler');
+var ces = require('ces');
+var BaseHandler = ces.BaseHandler;
 
 function BenchHandler(topic, broker){
 	BaseHandler.call(this, topic, broker);

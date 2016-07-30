@@ -15,16 +15,14 @@ var EventEmitter = require('events').EventEmitter
 require('../utils/logger')
     .use(require('../appconfig/log4js-default'), 'ces');
 
-function App(){
+function App(work_path, config){
 	EventEmitter.call(this);
 
-	root = path.join(__dirname, "../");
+	this.work_path_ = path.resolve(work_path);
 	// default app config path
-	this.app_config_path_ = path.join(root, 'appconfig/app.json');
+	this.app_config_path_ = path.join(this.work_path_, 'config');
 	// default services path
-	this.services_path_ = path.join(root, 'services');
-	// default handlers path
-	this.handlers_path_ = path.join(root, 'handlers');
+	this.services_path_ = path.join(this.work_path_, 'services');
 
 };
 require('util').inherits(App, EventEmitter);
@@ -39,16 +37,7 @@ App.prototype.showHelp = function() {
 };
 
 App.prototype.run = function() {
-	var argv = require('minimist')(process.argv.slice(2));
-	if ('h' in argv){
-		this.showHelp();
-		process.exit(0);
-	}
-	else{
-		if ('c' in argv){
-			this.app_config_path_ = argv['c'];
-		}
-	}
+	AppConfig.loadConfig(this.app_config_path_);
 	this.init();
 };
 
@@ -60,15 +49,11 @@ App.prototype.init = function() {
 	// 初始化基本服务和配置信息
 	logger.info('====================================================================');
 	logger.info('Starting CES services ...');
-	
-	// 从appconfig中装载应用程序配置信息
-	logger.info('Loading app configuration from ' + this.app_config_path_);
-	var appconfig = AppConfig.loadConfig(this.app_config_path_);	
 
 	// 初始化services中的服务
 	function loadServices(cb){
 		logger.info('Init services from ' + self.services_path_);
-		services = ServMgr.create(self.services_path_, appconfig['services']||{});
+		services = ServMgr.create(self.services_path_, config['services']||{});
 		logger.info('Pre-loading service ...');
 		services.preload(function(){
 			// 预加载服务完成
@@ -121,7 +106,7 @@ App.prototype.init = function() {
 		var recv = new Receiver(eventstream, applier);
 		var sender = new Sender(eventstream, applier);
 		var broker = new EventBroker(recv, sender, services);
-		broker.configure(appconfig['broker']||{});
+		broker.configure(self.work_path_);
 		broker.run();
 
 		cb && cb();
@@ -133,7 +118,7 @@ App.prototype.init = function() {
 
 	// 初始化服务
 	loadServices(function(services){
-		if (appconfig.cluster) { // Cluster mode
+		if (config.local.cluster) { // Cluster mode
 			// 加入集群
 			joinCluster(function(applier){
 				// 启动CES服务

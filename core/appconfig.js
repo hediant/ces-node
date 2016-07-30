@@ -1,30 +1,15 @@
-var fs = require('fs');
+var fs = require('fs')
+	, _ = require('lodash')
+	, path = require('path');
 
-function AppConfig(){};
+//
+// Global Configuration
+//
+config = {};
 
-AppConfig.loadConfig = function(appconf){
-	var config = new AppConfig();
-	if (!fs.existsSync(appconf)){
-		logger.error(appconf + ' NOT found!');
-		process.abort();
-	}
-
-	config.load(appconf);	
-	return config;
-};
-
-AppConfig.prototype.load = function(path){
-	this.config_file_path_ = path;
-	try{
-		var cfgjson = JSON.parse(fs.readFileSync(path, {'encoding':'utf-8'}));
-		for(var key in cfgjson){
-			this[key] = cfgjson[key];
-		}
-	}
-	catch(ex){
-		logger.error(ex);
-		process.abort();
-	}
-};
-
-module.exports = AppConfig;
+exports.loadConfig = function (config_path){
+	var config_files = fs.readdirSync(config_path);
+	config_files.forEach (function (file){
+		_.assign(config, require(path.join(config_path, file)))
+	})
+}

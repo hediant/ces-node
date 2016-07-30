@@ -1,6 +1,7 @@
 {
 	"apps" : [
 		{
+			"enabled" : false,
 			"name" : "ces",
 			"script" : "../index.js",
 			"watch" : false,
