@@ -1,6 +1,7 @@
 /*
  * Application Entry-point
  */
+const VER = "v0.1.0";
 
 var EventEmitter = require('events').EventEmitter
 	, AppConfig = require('./appconfig')
@@ -35,7 +36,7 @@ App.prototype.showHelp = function() {
 App.prototype.run = function() {
 	// init config
 	AppConfig.loadConfig(this.app_config_path_);
-	
+
 	// 初始化日志记录
 	require('../utils/logger').use(config.log4js, 'ces');
 
@@ -50,6 +51,15 @@ App.prototype.init = function() {
 	// 初始化基本服务和配置信息
 	logger.info('====================================================================');
 	logger.info('Starting CES services ...');
+	logger.info("      ___ ___  ___" );
+	logger.info("    / __/ _ \\/ __|");
+	logger.info("   | (_|  __/\\__ \\");
+	logger.info("    \\___\\___||___/");
+	logger.info("   ");
+	logger.info("   Author: hediant@gmail.com");
+	logger.info("   CreateAt: 2015-10-01");
+	logger.info("   Ver: ", VER);
+	logger.info("   ");
 
 	// 初始化services中的服务
 	function loadServices(cb){
