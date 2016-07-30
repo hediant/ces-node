@@ -11,10 +11,6 @@ var EventEmitter = require('events').EventEmitter
 	, EventBroker = require('./broker')
 	, path = require('path');
 
-// 初始化日志记录
-require('../utils/logger')
-    .use(require('../appconfig/log4js-default'), 'ces');
-
 function App(work_path, config){
 	EventEmitter.call(this);
 
@@ -37,7 +33,12 @@ App.prototype.showHelp = function() {
 };
 
 App.prototype.run = function() {
+	// init config
 	AppConfig.loadConfig(this.app_config_path_);
+	
+	// 初始化日志记录
+	require('../utils/logger').use(config.log4js, 'ces');
+
 	this.init();
 };
 
