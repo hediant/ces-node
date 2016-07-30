@@ -330,15 +330,17 @@ function ServiceWrapper(folder, servicename, option){
 		// 
 		createInstance();
 
-		//
-		// 开始监测服务程序修改事件
-		//
-		hotwatch();
+		if (config.services.watch){
+			//
+			// 开始监测服务程序修改事件
+			//
+			hotwatch();
 
-		//
-		// 开始监测服务配置信息更新事件
-		//	
-		watchconfig();		
+			//
+			// 开始监测服务配置信息更新事件
+			//	
+			watchconfig();
+		}
 
 	});
 
