@@ -26,13 +26,6 @@ require('util').inherits(App, EventEmitter);
 module.exports = App;
 App.prototype.constructor = App;
 
-App.prototype.showHelp = function() {
-	console.log('Usage:');
-	console.log('node ces [-c <config_filename>]');
-	console.log('node ces -h for help');
-	console.log('');
-};
-
 App.prototype.run = function() {
 	// init config
 	AppConfig.loadConfig(this.app_config_path_);
