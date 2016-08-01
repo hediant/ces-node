@@ -8,7 +8,7 @@ var fs = require('fs')
 services = {};
 
 var loadService = function (serv_name, serv_root){
-	logger.info("Load service <%s>", serv_name);
+	logger.info("Loading service <%s>", serv_name);
 
 	// load
 	services[serv_name] = require(serv_root);
