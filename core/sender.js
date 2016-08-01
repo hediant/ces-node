@@ -15,7 +15,7 @@ require('util').inherits(EventSender, EventEmitter);
 module.exports = EventSender;
 
 EventEmitter.prototype.fire = function(topic, event_class, fields) {
-	if (this.event_stream_ && this.event_stream_.isEnabled()) {
+	if (this.event_stream_ && this.event_stream_.ready) {
 		// for diagnosis
 		this.send_counter_++;
 		

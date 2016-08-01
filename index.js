@@ -3,13 +3,8 @@ var App = require('./core/app');
 //
 // Base Handlers
 //
-exports.BaseHandler = require('./handlers/BaseHandler');
-exports.SequentialHandler = require('./handlers/SequentialHandler');
-
-//
-// Base Services
-//
-exports.BaseService = require('./common/baseservice');
+exports.BaseHandler = require('./common/BaseHandler');
+exports.SequentialHandler = require('./common/SequentialHandler');
 
 //
 // Sliding Windows

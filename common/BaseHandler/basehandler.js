@@ -10,7 +10,6 @@ var EventEmitter = require('events').EventEmitter;
 function BaseHandler(topic, broker){
 	EventEmitter.call(this);
 
-	this.services = broker.services_;
 	this.receiver = broker.recv_;
 	this.sender = broker.sender_;
 	this.topic = topic;

@@ -9,19 +9,18 @@ var EventEmitter = require('events').EventEmitter
 	, Route = require('./route')
 	, Diagnosis = require('./diagnosis');
 
-function EventBroker(recv, sender, services){
+function EventBroker(recv, sender){
 	EventEmitter.call(this);
 
 	this.recv_ = recv;
 	this.sender_ = sender;
-	this.services_ = services;
 }
 require('util').inherits(EventBroker, EventEmitter);
 module.exports = EventBroker;
 EventBroker.prototype.constructor = EventBroker;
 
 EventBroker.prototype.configure = function(work_path) {
-	this.capacity_ = config.broker.capacity || 100000;
+	this.capacity_ = config.local.capacity || 100000;
 	this.handler_folder_ = path.join(work_path, 'handlers');
 
 	this.cache_ = new Cache(this.capacity_);
@@ -51,7 +50,7 @@ EventBroker.prototype.run = function() {
 	});
 
 	// 开始监视handler文件夹
-	if (config.broker.watch)
+	if (config.local.watch)
 		this.doWatch();
 
 	// 开始监视诊断信息

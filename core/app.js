@@ -5,7 +5,7 @@ const VER = "v0.1.0";
 
 var EventEmitter = require('events').EventEmitter
 	, AppConfig = require('./appconfig')
-	, ServMgr = require('./servicesmgr')
+	, ServMgr = require('./services')
 	, Applier = require('./applier')
 	, Receiver = require('./recv')
 	, Sender = require('./sender')
@@ -55,23 +55,12 @@ App.prototype.showAbout = function() {
 };
 
 App.prototype.init = function() {
-	var self = this
-		, services;
+	var self = this;
 
 	// 初始化services中的服务
-	function loadServices(cb){
+	function loadServices(){
 		logger.info('Init services from ' + self.services_path_);
-		services = ServMgr.create(self.services_path_, config['services']||{});
-		logger.info('Pre-loading service ...');
-		services.preload(function(){
-			// 预加载服务完成
-			logger.info('Pre-load services finished.');
-
-			setImmediate(function(){
-				cb && cb(services);
-			});
-			
-		});	
+		ServMgr.loadAllServices(self.services_path_);
 	}
 
 	// 加入集群
@@ -110,10 +99,10 @@ App.prototype.init = function() {
 	function startCES(applier, cb){
 		// 开始提供Event Handle Broke服务
 		logger.info('Starting Event-Handle-Broker ...');
-		var eventstream = services.get('eventstream');
+		var eventstream = services['eventstream'];
 		var recv = new Receiver(eventstream, applier);
 		var sender = new Sender(eventstream, applier);
-		var broker = new EventBroker(recv, sender, services);
+		var broker = new EventBroker(recv, sender);
 		broker.configure(self.work_path_);
 		broker.run();
 
@@ -125,21 +114,21 @@ App.prototype.init = function() {
 	//////////////////////////////////////////////////////////////////////
 
 	// 初始化服务
-	loadServices(function(services){
-		if (config.local.cluster) { // Cluster mode
-			// 加入集群
-			joinCluster(function(applier){
-				// 启动CES服务
-				startCES(applier, function(){
-					logger.info('CES services is running in Cluster mode.');
-				});
-			});
-		}
-		else { // Stand-alone mode
-			startCES(null, function(){
-				logger.info('CES services is running in Stand-alone mode.');
-			});
-		}
-	});
+	loadServices();
 
+	// Initialization of application
+	if (config.local.cluster) { // Cluster mode
+		// 加入集群
+		joinCluster(function(applier){
+			// 启动CES服务
+			startCES(applier, function(){
+				logger.info('CES services is running in Cluster mode.');
+			});
+		});
+	}
+	else { // Stand-alone mode
+		startCES(null, function(){
+			logger.info('CES services is running in Stand-alone mode.');
+		});
+	}	
 };

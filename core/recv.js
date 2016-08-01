@@ -20,8 +20,7 @@ module.exports = EventReceiver;
 
 EventReceiver.prototype.init = function() {
 	var self = this;
-	if (!this.event_stream_ || 
-		!this.event_stream_.isEnabled()){
+	if (!this.event_stream_){
 		logger.error('Event Streaming Error. Process must exit.');
 		process.exit(1);
 	}
@@ -44,13 +43,9 @@ EventReceiver.prototype.init = function() {
 			self.dispose(events);
 		})
 	}
-	dosub();
-	//
-	// 特别注意：
-	// 当服务重新载入的时候，需要重新sub订阅发布服务
-	//
-	this.event_stream_.onReady(dosub);
 
+	// do subscribe
+	dosub();
 };
 
 EventReceiver.prototype.inithashing = function() {

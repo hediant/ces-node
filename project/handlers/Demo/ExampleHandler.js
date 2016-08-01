@@ -37,7 +37,7 @@ ExampleHandler.prototype.handleEvent = function(topic, fields) {
 
 	console.log('Fields:', JSON.stringify(fields));
 	console.log('Services: ');
-	console.log(this.services.list());
+	console.log(Object.keys(services));
 	console.log('comment me to see what\'s going on!');
 
 	// 滑动时间窗口
