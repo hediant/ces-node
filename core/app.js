@@ -43,7 +43,7 @@ App.prototype.run = function() {
 	// Show about 
 	this.showAbout();
 
-	// initialize application
+	// 初始化基本服务和配置信息
 	this.init();
 };
 
@@ -64,9 +64,6 @@ App.prototype.showAbout = function() {
 App.prototype.init = function() {
 	var self = this
 		, services;
-
-	///////////////////////////////////////////////////
-	// 初始化基本服务和配置信息
 
 	// 初始化services中的服务
 	function loadServices(cb){
