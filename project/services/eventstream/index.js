@@ -1,4 +1,4 @@
-var StreamAPI = require('./stream_client');
+var StreamAPI = require('../../common/stream_client');
 
 //
 // configs
