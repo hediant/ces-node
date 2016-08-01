@@ -1,4 +1,4 @@
-module.exports.eventstream = {
+module.exports = {
 	"stream_server":[
 		"http://localhost:10016"
 	],

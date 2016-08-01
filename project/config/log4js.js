@@ -1,6 +1,6 @@
 var path = require('path');
 
-module.exports.log4js = {
+module.exports = {
 	"appenders" : [
 		{
 			"type" : "logLevelFilter",

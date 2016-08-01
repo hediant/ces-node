@@ -1,4 +1,4 @@
-module.exports.routes = [
+module.exports = [
 	{
 		"pattern" : new RegExp("^demo/\.+"),
 		"handler" : "Demo/ExampleHandler"

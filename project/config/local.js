@@ -1,4 +1,4 @@
-module.exports.local = {
+module.exports = {
 	//
 	// cluster or singlton mode
 	//

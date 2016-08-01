@@ -22,7 +22,7 @@ EventBroker.prototype.constructor = EventBroker;
 
 EventBroker.prototype.configure = function(work_path) {
 	this.capacity_ = config.broker.capacity || 100000;
-	this.handler_folder_ = path.join(work_path, config.broker.handlers || 'handlers');
+	this.handler_folder_ = path.join(work_path, 'handlers');
 
 	this.cache_ = new Cache(this.capacity_);
 	this.diagnosis_ = config.diagnosis.enabled || false;

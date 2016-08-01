@@ -1,5 +1,4 @@
-module.exports.broker = {
+module.exports = {
 	"capacity" : 100000,
-	"handlers" : "/handlers",
 	"watch" : true
 }
