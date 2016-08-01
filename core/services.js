@@ -24,6 +24,9 @@ var loadAllServices = function (services_folder){
 		if (fs.statSync(res).isDirectory()){
 			serv_name = id;
 		}
+		else if (path.extname(id).toLowerCase() == '.js'){
+			serv_name = path.basename(id, '.js');
+		}
 
 		if (serv_name){
 			// load service
