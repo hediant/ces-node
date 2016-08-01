@@ -1,7 +1,0 @@
-{
-	"name":"live",
-	"enable":true,
-	"addr":"localhost",
-	"auth_pass":null,
-	"port":6379
-}

@@ -3,7 +3,7 @@
 		{
 			"enabled" : false,
 			"name" : "ces",
-			"script" : "../index.js",
+			"script" : "../app.js",
 			"watch" : false,
 			"error_file" : "../log/ces-error.log",
 			"out_file" : "/dev/null", 
