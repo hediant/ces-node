@@ -77,7 +77,7 @@ App.prototype.init = function() {
 	// 加入集群
 	function joinCluster(cb){
 		logger.info('Joining cluster pid #%s ...', process.pid);
-		var applier = new Applier(appconfig['zookeeper']||{});
+		var applier = new Applier(config.zookeeper ||{});
 		applier.on('error', function(err){
 			logger.error('Joining cluster failure, process must exit.' + err);
 			process.exit(1);

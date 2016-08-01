@@ -3,7 +3,8 @@
  */
 
 var EventEmitter = require('events').EventEmitter
-	, ConsistentHashing = require('consistent-hashing');
+	, ConsistentHashing = require('consistent-hashing')
+	, Route = require('./route');
 
 function EventReceiver(event_stream, applier){
 	this.event_stream_ = event_stream;
@@ -113,8 +114,9 @@ EventReceiver.prototype.dispose = function(events) {
 			if (!topic)
 				return;
 			
-			if (this.applier_){ // Cluster mode
-				if (self.hashing_.getNode(topic) == self.nodeid_){
+			if (self.applier_){ // Cluster mode
+				var uri = Route.routeUri(topic, evt.class);
+				if (self.hashing_.getNode(uri) == self.nodeid_){
 					send_(topic, evt.fields, evt.class);					
 				}				
 			}
