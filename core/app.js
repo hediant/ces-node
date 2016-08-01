@@ -40,15 +40,14 @@ App.prototype.run = function() {
 	// 初始化日志记录
 	require('../utils/logger').use(config.log4js, 'ces');
 
+	// Show about 
+	this.showAbout();
+
+	// initialize application
 	this.init();
 };
 
-App.prototype.init = function() {
-	var self = this
-		, services;
-
-	///////////////////////////////////////////////////
-	// 初始化基本服务和配置信息
+App.prototype.showAbout = function() {
 	logger.info('====================================================================');
 	logger.info('Starting CES services ...');
 	logger.info("      ___ ___  ___" );
@@ -60,6 +59,14 @@ App.prototype.init = function() {
 	logger.info("   CreateAt: 2015-10-01");
 	logger.info("   Ver: ", VER);
 	logger.info("   ");
+};
+
+App.prototype.init = function() {
+	var self = this
+		, services;
+
+	///////////////////////////////////////////////////
+	// 初始化基本服务和配置信息
 
 	// 初始化services中的服务
 	function loadServices(cb){
