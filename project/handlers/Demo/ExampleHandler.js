@@ -1,4 +1,4 @@
-var ces = require('ces');
+var ces = require('ces-node');
 var BaseHandler = ces.BaseHandler
 	, STW = ces.SlidingTimeWindow;
 

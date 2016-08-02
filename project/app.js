@@ -6,7 +6,7 @@ process.chdir(__dirname);
 (function() {
   var ces;
   try {
-    ces = require('ces');
+    ces = require('ces-node');
   } catch (e) {
     console.error('To run an app using `node app.js`, you usually need to have a version of `ces` installed in the same directory as your app.');
     console.error('To do that, run `npm install ces`');
