@@ -41,7 +41,7 @@ App.prototype.run = function() {
 };
 
 App.prototype.showAbout = function() {
-	logger.info('====================================================================');
+	logger.info('===============================================');
 	logger.info('Starting CES services ...');
 	logger.info("      ___ ___  ___" );
 	logger.info("    / __/ _ \\/ __|");

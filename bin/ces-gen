@@ -90,7 +90,7 @@ function loadTemplate(name) {
  */
 
 function createApplication(app_name, path) {
-  var wait = 5;
+  var wait = 7;
 
   console.log();
   function complete() {
@@ -104,173 +104,75 @@ function createApplication(app_name, path) {
     console.log('   run the app:');
 
     if (launchedFromCmd()) {
-      console.log('     %s SET DEBUG=%s:* & node --harmony app', prompt, app_name);
+      console.log('     %s SET DEBUG=%s:* & npm start', prompt, app_name);
     } else {
-      console.log('     %s DEBUG=%s:* node --harmony app', prompt, app_name);
+      console.log('     %s DEBUG=%s:* npm start', prompt, app_name);
     }
 
     console.log();
   }
 
-  // JavaScript
-  var app = loadTemplate('js/app.js');
-  var www = loadTemplate('js/www');
-  var index = loadTemplate('js/routes/index.js');
-  var users = loadTemplate('js/routes/users.js');
-
-  // CSS
-  var css = loadTemplate('css/style.css');
-  var less = loadTemplate('css/style.less');
-  var stylus = loadTemplate('css/style.styl');
-  var compass = loadTemplate('css/style.scss');
-  var sass = loadTemplate('css/style.sass');
-
   mkdir(path, function(){
     mkdir(path + '/common');
-    mkdir(path + '/config')
-    mkdir(path + '/config/services');
+    mkdir(path + '/common/stream_client', function (){
+      write(path + '/common/stream_client/index.js', loadTemplate('common/stream_client/index.js'));
+      complete();
+    });
+
+    mkdir(path + '/config');
+    mkdir(path + '/config/services', function (){
+      write(path + '/config/diagnosis.js', loadTemplate('config/diagnosis.js'));
+      write(path + '/config/local.js', loadTemplate('config/local.js'));
+      write(path + '/config/log4js.js', loadTemplate('config/log4js.js'));
+      write(path + '/config/routes.js', loadTemplate('config/routes.js'));
+      write(path + '/config/zookeeper.js', loadTemplate('config/zookeeper.js'));
+      write(path + '/config/services/eventstream.js', loadTemplate('config/services/eventstream.js'));
+      complete();
+    });
+
     mkdir(path + '/handlers');
-    mkdir(path + '/handlers/Demo');
+    mkdir(path + '/handlers/Demo', function (){
+      write(path + '/handlers/Demo/ExampleHandler.js', loadTemplate('handlers/Demo/ExampleHandler.js'));
+      complete();
+    });
+
     mkdir(path + '/logs');
-    mkdir(path + '/sbin')
+    mkdir(path + '/sbin', function (){
+      write(path + '/sbin/ces.json', loadTemplate('sbin/ces.json'));
+      write(path + '/sbin/ces.sh', loadTemplate('sbin/ces.sh'), 0755); 
+      complete(); 
+    });
+
     mkdir(path + '/services');
-    mkdir(path + '/services/eventstream');
-    mkdir(path + '/test');
-
-    mkdir(path + '/public/stylesheets', function(){
-      switch (program.css) {
-        case 'less':
-          write(path + '/public/stylesheets/style.less', less);
-          break;
-        case 'stylus':
-          write(path + '/public/stylesheets/style.styl', stylus);
-          break;
-        case 'compass':
-          write(path + '/public/stylesheets/style.scss', compass);
-          break;
-        case 'sass':
-          write(path + '/public/stylesheets/style.sass', sass);
-          break;
-        default:
-          write(path + '/public/stylesheets/style.css', css);
-      }
+    mkdir(path + '/services/eventstream', function (){
+      write(path + '/services/eventstream/index.js', loadTemplate('services/eventstream/index.js'));
       complete();
     });
 
-    mkdir(path + '/routes', function(){
-      write(path + '/routes/index.js', index);
-      write(path + '/routes/users.js', users);
-      complete();
+    mkdir(path + '/test', function (){
+      write(path + '/test/fire.js', loadTemplate('test/fire.js')); 
+      complete();       
     });
-
-    mkdir(path + '/views', function(){
-      switch (program.template) {
-        case 'ejs':
-          copy_template('ejs/index.ejs', path + '/views/index.ejs');
-          copy_template('ejs/error.ejs', path + '/views/error.ejs');
-          break;
-        case 'jade':
-          copy_template('jade/index.jade', path + '/views/index.jade');
-          copy_template('jade/layout.jade', path + '/views/layout.jade');
-          copy_template('jade/error.jade', path + '/views/error.jade');
-          break;
-        case 'hjs':
-          copy_template('hogan/index.hjs', path + '/views/index.hjs');
-          copy_template('hogan/error.hjs', path + '/views/error.hjs');
-          break;
-        case 'hbs':
-          copy_template('hbs/index.hbs', path + '/views/index.hbs');
-          copy_template('hbs/layout.hbs', path + '/views/layout.hbs');
-          copy_template('hbs/error.hbs', path + '/views/error.hbs');
-          break;
-      }
-      complete();
-    });
-
-    // CSS Engine support
-    switch (program.css) {
-      case 'less':
-        app = app.replace('{css}', eol + 'app.use(require(\'less-middleware\')(path.join(__dirname, \'public\')));');
-        break;
-      case 'stylus':
-        app = app.replace('{css}', eol + 'app.use(require(\'stylus\').middleware(path.join(__dirname, \'public\')));');
-        break;
-      case 'compass':
-        app = app.replace('{css}', eol + 'app.use(require(\'node-compass\')({mode: \'expanded\'}));');
-        break;
-      case 'sass':
-        app = app.replace('{css}', eol + 'app.use(require(\'node-sass-middleware\')({\n  src: path.join(__dirname, \'public\'),\n  dest: path.join(__dirname, \'public\'),\n  indentedSyntax: true,\n  sourceMap: true\n}));');
-        break;
-      default:
-        app = app.replace('{css}', '');
-    }
-
-    // Template support
-    app = app.replace('{views}', program.template);
 
     // package.json
     var pkg = {
         name: app_name
       , version: '0.0.0'
       , private: true
-      , scripts: { start: 'node ./bin/www' }
+      , scripts: { start: 'node --harmony app' }
       , dependencies: {
-          'express': '~4.13.1',
-          'body-parser': '~1.13.2',
-          'cookie-parser': '~1.3.5',
-          'debug': '~2.2.0',
-          'morgan': '~1.6.1',
-          'serve-favicon': '~2.3.0'
+        "rc": "^1.1.6",
+        "socket.io-client": "^1.4.8",
+        "ces-node" : "^" + version
       }
     }
 
-    switch (program.template) {
-      case 'jade':
-        pkg.dependencies['jade'] = '~1.11.0';
-        break;
-      case 'ejs':
-        pkg.dependencies['ejs'] = '~2.3.3';
-        break;
-      case 'hjs':
-        pkg.dependencies['hjs'] = '~0.0.6';
-        break;
-      case 'hbs':
-        pkg.dependencies['hbs'] = '~3.1.0';
-        break;
-      default:
-    }
-
-    // CSS Engine support
-    switch (program.css) {
-      case 'less':
-        pkg.dependencies['less-middleware'] = '1.0.x';
-        break;
-      case 'compass':
-        pkg.dependencies['node-compass'] = '0.2.3';
-        break;
-      case 'stylus':
-        pkg.dependencies['stylus'] = '0.42.3';
-        break;
-      case 'sass':
-        pkg.dependencies['node-sass-middleware'] = '0.8.0';
-        break;
-      default:
-    }
-
-    // sort dependencies like npm(1)
-    pkg.dependencies = sortedObject(pkg.dependencies);
-
     // write files
     write(path + '/package.json', JSON.stringify(pkg, null, 2));
-    write(path + '/app.js', app);
-    mkdir(path + '/bin', function(){
-      www = www.replace('{name}', app_name);
-      write(path + '/bin/www', www, 0755);
-      complete();
-    });
+    write(path + '/app.js', loadTemplate('app.js'));
 
     if (program.git) {
-      write(path + '/.gitignore', fs.readFileSync(__dirname + '/../templates/js/gitignore', 'utf-8'));
+      write(path + '/.gitignore', fs.readFileSync(__dirname + '/../project/npm/gitignore', 'utf-8'));
     }
 
     complete();
@@ -309,6 +211,7 @@ function main() {
 program
   .version(version)
   .usage('[options] [dir]')
+  .option('--git', 'add .gitignore')
   .option('-f, --force', 'force on non-empty directory')
   .parse(process.argv);
 
