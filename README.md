@@ -24,55 +24,38 @@
 
 安装并设置开机自启动, http://www.cnblogs.com/silent2012/p/4157728.html
 
-# 安装
-
-> cd ces
-
-> npm install
-
-# 配置
-
-* 需要自己创建 ces/log/目录（或者修改ces/appconfig/log4js-default.json中指定的路径）
-* 配置文件在 ces/appconfig/ 目录下
-
-# 运行
-
-> node ces
-
-或者
-
-> ./sbin/ces.sh start
-
-或者
-
-> node ces -c <your app_config.json path>
-
-如果不指定config路径，将尝试寻找ces/appconfig/app.json的配置文件
-在ces/appconfig/ 下有三个配置文件，其中
-app.json为默认的配置文件，默认以集群的方式启动
-app-cluster.json为以集群方式启动的配置文件
-app-stand.json为以单例（或者独立主机stand alone）的方式启动的配置文件
-例如：
-可以输入以下命令进入单机模式
-
-> node ces -c ces/appconfig/app-stand.json
-
 # 依赖
 
 依赖stream服务，如果stream服务没有启动，可以在stream目录下运行
 
 > ./sbin/stream start
 
-# 测试
+# 安装CES
 
-然后运行test目录下的fire*，发射事件，如：
+* 安装CES MODULE
 
-> node ces/test/fire.js
+> npm install ces-node
 
-或
+# 创建CES的工程
 
-> node ces/test/fire.bench.js
+* 将ces-node下的project目录拷贝到指定位置, 重命名
 
-或
+# 配置CES的工程
 
-> node ces/test/athena.fire.js
+* 配置 $PROJECT_ROOT 下的 config/ 目录
+
+# 运行CES的工程
+
+> cd $PROJECT_ROOT
+
+> node app
+
+或者
+
+> ./sbin/ces.sh start
+
+# 测试CES的工程
+
+运行test目录下的fire*，发射事件，如：
+
+> node test/fire.js
