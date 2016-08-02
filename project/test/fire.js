@@ -1,4 +1,4 @@
-var StreamAPI = require('../../stream/client/stream-api.js');
+var StreamAPI = require('../common/stream_client');
 
 var stream_addr = 'http://localhost:10016';
 // var stream_addr = 'http://172.18.16.254:10016';
