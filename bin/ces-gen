@@ -132,10 +132,10 @@ function createApplication(app_name, path) {
     mkdir(path + '/handlers');
     mkdir(path + '/handlers/Demo');
     mkdir(path + '/logs');
-    mkdir(path + '/config')
-    mkdir(path + '/config/services');
-    mkdir(path + '/handlers');
-    mkdir(path + '/handlers/Demo');
+    mkdir(path + '/sbin')
+    mkdir(path + '/services');
+    mkdir(path + '/services/eventstream');
+    mkdir(path + '/test');
 
     mkdir(path + '/public/stylesheets', function(){
       switch (program.css) {

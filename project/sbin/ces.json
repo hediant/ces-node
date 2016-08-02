@@ -5,7 +5,7 @@
 			"name" : "ces",
 			"script" : "../app.js",
 			"watch" : false,
-			"error_file" : "../log/ces-error.log",
+			"error_file" : "../logs/ces-error.log",
 			"out_file" : "/dev/null", 
 			"max_restarts" : 10,
 			"max_memory_restart" : "3G",
