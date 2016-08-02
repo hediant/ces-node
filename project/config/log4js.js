@@ -7,7 +7,7 @@ module.exports = {
 			"level" : "INFO",			
 			"appender" : {
 				"type" : "file",
-				"filename" : path.join(__dirname, "../log/serv.log"),
+				"filename" : path.join(__dirname, "../logs/serv.log"),
 				"maxLogSize" : 1048576,
 				"backups" : 10
 			}

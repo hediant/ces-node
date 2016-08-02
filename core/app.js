@@ -41,14 +41,14 @@ App.prototype.run = function() {
 };
 
 App.prototype.showAbout = function() {
-	logger.info('====================================================================');
+	logger.info('===============================================');
 	logger.info('Starting CES services ...');
 	logger.info("      ___ ___  ___" );
 	logger.info("    / __/ _ \\/ __|");
 	logger.info("   | (_|  __/\\__ \\");
 	logger.info("    \\___\\___||___/");
 	logger.info("   ");
-	logger.info("   Author: hediant@gmail.com");
+	logger.info("   Author: ", pkg.author);
 	logger.info("   CreateAt: 2015-10-01");
 	logger.info("   Ver: ", pkg.version);
 	logger.info("   ");

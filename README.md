@@ -35,12 +35,6 @@
 
 # 安装CES
 
-* 可以在$PROJECT_ROOT下安装CES MODULE
-
-> npm install ces-node
-
-* 也可以采用全局安装的方式
-
 > npm install -g ces-node
 
 # 创建CES的工程

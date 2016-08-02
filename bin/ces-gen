@@ -1,0 +1,219 @@
+#!/usr/bin/env node
+
+var program = require('commander');
+var mkdirp = require('mkdirp');
+var os = require('os');
+var fs = require('fs');
+var path = require('path');
+var readline = require('readline');
+var pkg = require('../package.json');
+var version = pkg.version;
+
+/**
+ * echo str > path.
+ *
+ * @param {String} path
+ * @param {String} str
+ */
+
+function write(path, str, mode) {
+  fs.writeFileSync(path, str, { mode: mode || 0666 });
+  console.log('   \x1b[36mcreate\x1b[0m : ' + path);
+}
+
+/**
+ * Mkdir -p.
+ *
+ * @param {String} path
+ * @param {Function} fn
+ */
+
+function mkdir(path, fn) {
+  mkdirp(path, 0755, function(err){
+    if (err) throw err;
+    console.log('   \033[36mcreate\033[0m : ' + path);
+    fn && fn();
+  });
+}
+
+/**
+ * Check if the given directory `path` is empty.
+ *
+ * @param {String} path
+ * @param {Function} fn
+ */
+
+function emptyDirectory(path, fn) {
+  fs.readdir(path, function(err, files){
+    if (err && 'ENOENT' != err.code) throw err;
+    fn(!files || !files.length);
+  });
+}
+
+/**
+ * Prompt for confirmation on STDOUT/STDIN
+ */
+
+function confirm(msg, callback) {
+  var rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  rl.question(msg, function (input) {
+    rl.close();
+    callback(/^y|yes|ok|true$/i.test(input));
+  });
+}
+
+/**
+ * Determine if launched from cmd.exe
+ */
+
+function launchedFromCmd() {
+  return process.platform === 'win32'
+    && process.env._ === undefined;
+}
+
+/**
+ * Load template file.
+ */
+
+function loadTemplate(name) {
+  return fs.readFileSync(path.join(__dirname, '..', 'project', name), 'utf-8');
+}
+
+/**
+ * Create application at the given directory `path`.
+ *
+ * @param {String} path
+ */
+
+function createApplication(app_name, path) {
+  var wait = 7;
+
+  console.log();
+  function complete() {
+    if (--wait) return;
+    var prompt = launchedFromCmd() ? '>' : '$';
+
+    console.log();
+    console.log('   install dependencies:');
+    console.log('     %s cd %s && npm install', prompt, path);
+    console.log();
+    console.log('   run the app:');
+
+    if (launchedFromCmd()) {
+      console.log('     %s SET DEBUG=%s:* & npm start', prompt, app_name);
+    } else {
+      console.log('     %s DEBUG=%s:* npm start', prompt, app_name);
+    }
+
+    console.log();
+  }
+
+  mkdir(path, function(){
+    mkdir(path + '/common');
+    mkdir(path + '/common/stream_client', function (){
+      write(path + '/common/stream_client/index.js', loadTemplate('common/stream_client/index.js'));
+      complete();
+    });
+
+    mkdir(path + '/config');
+    mkdir(path + '/config/services', function (){
+      write(path + '/config/diagnosis.js', loadTemplate('config/diagnosis.js'));
+      write(path + '/config/local.js', loadTemplate('config/local.js'));
+      write(path + '/config/log4js.js', loadTemplate('config/log4js.js'));
+      write(path + '/config/routes.js', loadTemplate('config/routes.js'));
+      write(path + '/config/zookeeper.js', loadTemplate('config/zookeeper.js'));
+      write(path + '/config/services/eventstream.js', loadTemplate('config/services/eventstream.js'));
+      complete();
+    });
+
+    mkdir(path + '/handlers');
+    mkdir(path + '/handlers/Demo', function (){
+      write(path + '/handlers/Demo/ExampleHandler.js', loadTemplate('handlers/Demo/ExampleHandler.js'));
+      complete();
+    });
+
+    mkdir(path + '/logs');
+    mkdir(path + '/sbin', function (){
+      write(path + '/sbin/ces.json', loadTemplate('sbin/ces.json'));
+      write(path + '/sbin/ces.sh', loadTemplate('sbin/ces.sh'), 0755); 
+      complete(); 
+    });
+
+    mkdir(path + '/services');
+    mkdir(path + '/services/eventstream', function (){
+      write(path + '/services/eventstream/index.js', loadTemplate('services/eventstream/index.js'));
+      complete();
+    });
+
+    mkdir(path + '/test', function (){
+      write(path + '/test/fire.js', loadTemplate('test/fire.js')); 
+      complete();       
+    });
+
+    // package.json
+    var pkg = {
+        name: app_name
+      , version: '0.0.0'
+      , private: true
+      , scripts: { start: 'node --harmony app' }
+      , dependencies: {
+        "rc": "^1.1.6",
+        "socket.io-client": "^1.4.8",
+        "ces-node" : "^" + version
+      }
+    }
+
+    // write files
+    write(path + '/package.json', JSON.stringify(pkg, null, 2));
+    write(path + '/app.js', loadTemplate('app.js'));
+
+    if (program.git) {
+      write(path + '/.gitignore', fs.readFileSync(__dirname + '/../project/npm/gitignore', 'utf-8'));
+    }
+
+    complete();
+  });
+}
+
+/**
+ * Main program.
+ */
+
+function main() {
+  // Path
+  var destinationPath = program.args.shift() || '.';
+
+  // App name
+  var appName = path.basename(path.resolve(destinationPath));
+
+  // Generate application
+  emptyDirectory(destinationPath, function (empty) {
+    if (empty || program.force) {
+      createApplication(appName, destinationPath);
+    } else {
+      confirm('destination is not empty, continue? [y/N] ', function (ok) {
+        if (ok) {
+          process.stdin.destroy();
+          createApplication(appName, destinationPath);
+        } else {
+          console.error('aborting');
+          process.exit(1);
+        }
+      });
+    }
+  });
+}
+
+program
+  .version(version)
+  .usage('[options] [dir]')
+  .option('--git', 'add .gitignore')
+  .option('-f, --force', 'force on non-empty directory')
+  .parse(process.argv);
+
+main();
+
