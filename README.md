@@ -24,6 +24,9 @@
 
 安装并设置开机自启动, http://www.cnblogs.com/silent2012/p/4157728.html
 
+* **ES6支持**
+
+
 # 依赖
 
 依赖stream服务，如果stream服务没有启动，可以在stream目录下运行
@@ -52,7 +55,7 @@
 
 > cd $PROJECT_ROOT
 
-> node app
+> node --harmony app
 
 或者
 
