@@ -8,11 +8,11 @@ process.chdir(__dirname);
   try {
     ces = require('ces-node');
   } catch (e) {
-    console.error('To run an app using `node app.js`, you usually need to have a version of `ces` installed in the same directory as your app.');
-    console.error('To do that, run `npm install ces`');
+    console.error('To run an app using `node app.js`, you usually need to have a version of `ces-node` installed in the same directory as your app.');
+    console.error('To do that, run `npm install ces-node`');
     console.error('');
-    console.error('Alternatively, if you have ces installed globally (i.e. you did `npm install -g ces`), you can use `ces lift`.');
-    console.error('When you run `ces lift`, your app will still use a local `./node_modules/ces` dependency if it exists,');
+    console.error('Alternatively, if you have ces installed globally (i.e. you did `npm install -g ces-node`).');
+    console.error('When you run it, your app will still use a local `./node_modules/ces-node` dependency if it exists,');
     console.error('but if it doesn\'t, the app will run with the global ces instead!');
     return;
   }
