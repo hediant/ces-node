@@ -1,7 +1,7 @@
 /*
  * Application Entry-point
  */
-const VER = "v0.1.0";
+var pkg = require('../package.json');
 
 var EventEmitter = require('events').EventEmitter
 	, AppConfig = require('./appconfig')
@@ -50,7 +50,7 @@ App.prototype.showAbout = function() {
 	logger.info("   ");
 	logger.info("   Author: hediant@gmail.com");
 	logger.info("   CreateAt: 2015-10-01");
-	logger.info("   Ver: ", VER);
+	logger.info("   Ver: ", pkg.version);
 	logger.info("   ");
 };
 
