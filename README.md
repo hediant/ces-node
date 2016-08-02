@@ -39,7 +39,7 @@
 
 # 创建CES的工程
 
-* 将ces-node下的project目录拷贝到指定位置, 重命名
+> ces-gen $PROJECT_ROOT
 
 # 配置CES的工程
 
