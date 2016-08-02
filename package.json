@@ -1,7 +1,7 @@
 {
   "name": "ces-node",
   "description": "Calculation Engine Services",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "private": false,
   "author": "David Hediant <hediant@gmail.com>",
   "contributors": [],
@@ -11,9 +11,7 @@
     "event stream"
   ],
   "dependencies": {
-    "ali-mns": "2.3.6",
     "assert": "^1.4.1",
-    "async": "0.9.0",
     "co": "^4.6.0",
     "commander": "^2.9.0",
     "consistent-hashing": "0.2.3",
@@ -23,15 +21,11 @@
     "minimist": "1.1.0",
     "mkdirp": "^0.5.1",
     "moment": "^2.14.1",
-    "mysql": "^2.11.1",
     "node-zookeeper-client": "0.2.1",
-    "promise": "7.1.1",
     "q": "^1.4.1",
     "readline": "^1.3.0",
-    "redis": "0.12.1",
-    "string": "3.1.1",
-    "watch.io": "1.0.4",
-    "yagnus": "0.0.17"
+    "redis": "^2.6.2",
+    "watch.io": "1.0.4"
   },
   "engines": {
     "node": ">= 0.10.0"
