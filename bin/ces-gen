@@ -67,11 +67,20 @@ function confirm(msg, callback) {
 }
 
 /**
+ * Determine if launched from cmd.exe
+ */
+
+function launchedFromCmd() {
+  return process.platform === 'win32'
+    && process.env._ === undefined;
+}
+
+/**
  * Load template file.
  */
 
 function loadTemplate(name) {
-  return fs.readFileSync(path.join(__dirname, '..', 'templates', name), 'utf-8');
+  return fs.readFileSync(path.join(__dirname, '..', 'project', name), 'utf-8');
 }
 
 /**
@@ -95,9 +104,9 @@ function createApplication(app_name, path) {
     console.log('   run the app:');
 
     if (launchedFromCmd()) {
-      console.log('     %s SET DEBUG=%s:* & npm start', prompt, app_name);
+      console.log('     %s SET DEBUG=%s:* & node --harmony app', prompt, app_name);
     } else {
-      console.log('     %s DEBUG=%s:* npm start', prompt, app_name);
+      console.log('     %s DEBUG=%s:* node --harmony app', prompt, app_name);
     }
 
     console.log();
@@ -117,9 +126,17 @@ function createApplication(app_name, path) {
   var sass = loadTemplate('css/style.sass');
 
   mkdir(path, function(){
-    mkdir(path + '/public');
-    mkdir(path + '/public/javascripts');
-    mkdir(path + '/public/images');
+    mkdir(path + '/common');
+    mkdir(path + '/config')
+    mkdir(path + '/config/services');
+    mkdir(path + '/handlers');
+    mkdir(path + '/handlers/Demo');
+    mkdir(path + '/logs');
+    mkdir(path + '/config')
+    mkdir(path + '/config/services');
+    mkdir(path + '/handlers');
+    mkdir(path + '/handlers/Demo');
+
     mkdir(path + '/public/stylesheets', function(){
       switch (program.css) {
         case 'less':
@@ -282,7 +299,7 @@ function main() {
           createApplication(appName, destinationPath);
         } else {
           console.error('aborting');
-          exit(1);
+          process.exit(1);
         }
       });
     }
@@ -294,4 +311,6 @@ program
   .usage('[options] [dir]')
   .option('-f, --force', 'force on non-empty directory')
   .parse(process.argv);
+
+main();
 
