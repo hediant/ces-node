@@ -1,8 +1,8 @@
 {
-  "name": "athena-ces",
+  "name": "ces",
   "description": "Calculation Engine Services",
   "version": "0.0.1",
-  "private": true,
+  "private": false,
   "author": "David Hediant <hediant@gmail.com>",
   "contributors": [],
   "keywords": [
