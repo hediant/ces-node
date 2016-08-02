@@ -51,13 +51,7 @@ EventBroker.prototype.run = function() {
 				if (handler){
 					handler.inst && handler.inst.emit('close');
 					self.cache_.remove(topic);
-				}
-
-				// 删除information service中的缓存
-				var info = self.services_.get('information');
-				if (info && info.isEnabled()){
-					info.removeFromTopicCache(topic);
-				}				
+				}			
 			}
 
 		});
