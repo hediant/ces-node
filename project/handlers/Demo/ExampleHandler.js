@@ -15,7 +15,7 @@ function ExampleHandler(topic, broker){
 	});
 
 	// 创建滑动时间窗口
-	this.stw_ = new STW(topic, this.services, 30 * 1000);
+	this.stw_ = new STW(topic, 30 * 1000);
 
 };
 require('util').inherits(ExampleHandler, BaseHandler);

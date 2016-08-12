@@ -3,9 +3,9 @@
 //
 var SlidingWindow = require('./slidingwindow');
 
-function SlidingCountWindow(topic, services, count){
+function SlidingCountWindow(topic, count){
 	// base
-	SlidingWindow.call(this, topic, services);
+	SlidingWindow.call(this, topic);
 	this.count_ = count || 3;	// 默认是3个值
 
 	// init

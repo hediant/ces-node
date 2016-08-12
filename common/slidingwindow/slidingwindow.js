@@ -6,7 +6,7 @@ var EventEmitter = require('events').EventEmitter
 	, recv_time = "recv"
 	, source_time = "source";
 
-function SlidingWindow(topic, services){
+function SlidingWindow(topic){
 	EventEmitter.call(this);
 
 	//
@@ -19,7 +19,7 @@ function SlidingWindow(topic, services){
 	//
 	this.ready_ = false;
 	this.topic_ = topic;
-	this.services_ = services;
+
 	//
 	// key - string
 	// value - array

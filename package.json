@@ -1,7 +1,7 @@
 {
   "name": "ces-node",
   "description": "Calculation Engine Services",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "private": false,
   "author": "David Hediant <hediant@gmail.com>",
   "contributors": [],
@@ -34,7 +34,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://gitlab.thinglinx.com/athena/ces-node.git"
+    "url": "https://github.com/hediant/ces-node.git"
   },
   "bin": {
     "ces-gen": "./bin/ces-gen"

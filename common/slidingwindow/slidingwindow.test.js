@@ -9,7 +9,7 @@ var y = 0;
 
 
 function testSlideTime() {
-	var stw = new STW(topic, {}, period);
+	var stw = new STW(topic, period);
 	setInterval(function(){
 		var data = {};
 		if (Math.random()>0.5){
@@ -29,7 +29,7 @@ function testSlideTime() {
 }
 
 function testSlideCount() {
-	var scw = new SCW(topic, {}, count);
+	var scw = new SCW(topic, count);
 	setInterval(function(){
 		var data = {};
 		if (Math.random()>0.5){
