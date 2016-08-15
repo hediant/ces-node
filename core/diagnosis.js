@@ -1,5 +1,4 @@
 var os = require('os')
-	, async = require('async')
 	, S = require('string');
 
 function Diagnosis(broker, timeout) {
@@ -29,18 +28,18 @@ Diagnosis.prototype.close = function() {
 };
 
 Diagnosis.prototype.init_message = function() {
-	this.diag_msg_ = ["Diagnosis:"];
+	this.diag_msg_ = [];
 };
 
 Diagnosis.prototype.run = function() {
 	var self = this;
 	this.interval_ = setInterval(function(){
-		async.waterfall(self.diag_funcs_,
-			function(){
-				logger.info(self.diag_msg_.join('; '));
-				self.init_message();
-			}
-		);
+		self.diag_funcs_.forEach(function (func){
+			func();
+		});
+
+		logger.info("Diagnosis: " + self.diag_msg_.join('; '));
+		self.init_message();
 	}, this.timeout_);
 };
 
@@ -48,43 +47,38 @@ Diagnosis.prototype.init = function(){
 	var self = this;
 	this.diag_funcs_ = [
 		// cpu 
-		function(callback){
+		function(){
 			self.diag_msg_.push("cpu loadavg(1min, 5min, 15min):" + os.loadavg());
-			callback();
 		},
 
 		// mem
-		function(callback){
+		function(){
 			var tmpl_str = "mem total:{{total}}MB, mem free:{{free}}MB";
 			self.diag_msg_.push(S(tmpl_str).template({
 				"total":(os.totalmem()/(1024*1024)).toFixed(2),
 				"free":(os.freemem()/(1024*1024)).toFixed(2)
 			}).s);
-			callback();
 		},
 
 		// cache topics
-		function(callback){
+		function(){
 			self.diag_msg_.push("cached topics:"+self.broker_.cache_.size());
-			callback();
 		},
 
 		// recv & handle events count
-		function(callback){
+		function(){
 			var tmpl_str = "handle events total:{{total}}, avg(1min, 5min, 15min):{{1min}},{{5min}},{{15min}}";
 			self.diag_msg_.push(S(tmpl_str).template(
 				self.recv_avg_.print()
 			).s);
-			callback();
 		},
 
 		// send events count
-		function(callback){
+		function(){
 			var tmpl_str = "send events total:{{total}}, avg(1min, 5min, 15min):{{1min}},{{5min}},{{15min}}";
 			self.diag_msg_.push(S(tmpl_str).template(
 				self.send_avg_.print()
 			).s);
-			callback();
 		}		
 	];
 };
