@@ -1,7 +1,7 @@
 {
   "name": "ces-project",
   "description": "Project for Calculation Engine Services",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "contributors": [],
   "keywords": [
@@ -9,10 +9,6 @@
     "cep",
     "event stream"
   ],
-  "dependencies": {
-    "rc": "^1.1.6",
-    "socket.io-client": "^1.4.8"
-  },
   "engines": {
     "node": ">= 0.12.0"
   }

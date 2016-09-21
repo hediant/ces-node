@@ -1,9 +1,6 @@
-var StreamAPI = require('../common/stream_client');
-
-var stream_addr = 'http://localhost:10016';
-// var stream_addr = 'http://172.18.16.254:10016';
-
-var stream = new StreamAPI(stream_addr);
+var StreamAPI = require('amqp-subpub');
+var config = require('../config/services/eventstream');
+var stream = new StreamAPI(config.stream_server.url, config.stream_server.options);
 
 var count = 1;
 var tagcount = 2;

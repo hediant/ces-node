@@ -111,7 +111,8 @@ EventReceiver.prototype.dispose = function(events) {
 			
 			if (self.applier_){ // Cluster mode
 				var uri = Route.routeUri(topic, evt.class);
-				if (self.hashing_.getNode(uri) == self.nodeid_){
+				var hash = self.hashing_.getNode(uri);
+				if (hash == self.nodeid_){
 					send_(topic, evt.fields, evt.class);					
 				}				
 			}

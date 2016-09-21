@@ -90,7 +90,7 @@ function loadTemplate(name) {
  */
 
 function createApplication(app_name, path) {
-  var wait = 7;
+  var wait = 6;
 
   console.log();
   function complete() {
@@ -113,12 +113,6 @@ function createApplication(app_name, path) {
   }
 
   mkdir(path, function(){
-    mkdir(path + '/common');
-    mkdir(path + '/common/stream_client', function (){
-      write(path + '/common/stream_client/index.js', loadTemplate('common/stream_client/index.js'));
-      complete();
-    });
-
     mkdir(path + '/config');
     mkdir(path + '/config/services', function (){
       write(path + '/config/diagnosis.js', loadTemplate('config/diagnosis.js'));
@@ -162,7 +156,7 @@ function createApplication(app_name, path) {
       , scripts: { start: 'node --harmony app' }
       , dependencies: {
         "rc": "^1.1.6",
-        "socket.io-client": "^1.4.8",
+        "amqp-subpub": "0.0.1",
         "ces-node" : "^" + version
       }
     }

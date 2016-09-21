@@ -1,26 +1,26 @@
-var StreamAPI = require('../../common/stream_client');
+var StreamAPI = require('amqp-subpub');
 
 //
 // configs
 //
 var config_ = config.services.eventstream;
-var hosts = config_.stream_server || ["http://localhost:10016"];
 
 //
 // stream service client
 //
-var stream_ = new StreamAPI(hosts[0], config_.pull_interval);
+var stream_ = new StreamAPI(config_.stream_server.url, config_.stream_server.options);
 
 //
 // initialization
 //
-stream_.on('connect', function (){
+stream_.on('ready', function (){
 	stream_.sub();
 	serv_.ready = true;
 });
 
 stream_.on('error', function (err){
 	logger.fatal("Service <eventstream> error:%s. We must exit.", err.message);
+	console.log(err.stack);
 	process.exit(1);
 });
 
@@ -34,7 +34,7 @@ var event_queue_ = [];
 //
 var timer_ = setInterval(function(){
 	serv_.fireImmediatelly();
-}, config_.max_time_to_fire);	
+}, config_.max_time_to_fire);
 
 //
 // service instance
@@ -69,7 +69,7 @@ var serv_ = {
 			"class" : event_class,
 			"fields" : fields
 		});
-		
+
 		if (event_queue_.length >= config_.max_len){
 			serv_.fireImmediatelly();
 		}
@@ -77,13 +77,13 @@ var serv_ = {
 
 	// send event immediatelly
 	"fireImmediatelly" : function (){
-		if (event_queue_.length) {		
+		if (event_queue_.length) {
 			event_queue_.forEach(function(evt){
 				stream_.write(evt.topic, evt.class, evt.fields);
 			});
 
 			event_queue_ = [];
-		}		
+		}
 	}
 }
 
