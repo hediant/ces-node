@@ -6,8 +6,8 @@ var BaseHandler = require('../BaseHandler');
 // 超出队列最大长度（max_queue_len_）的事件（消息）将会被丢弃
 // 一个事件（消息）处理完后必须调用this.nextEvent()方法，以便在nextTick处理下一条事件（消息）
 //
-function SequentialHandler(topic, broker) {
-	BaseHandler.call(this, topic, broker);
+function SequentialHandler(topic, broker, event_class) {
+	BaseHandler.call(this, topic, broker, event_class);
 
 	this.max_queue_len_ = 10;
 	this.queue_ = [];

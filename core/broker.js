@@ -150,7 +150,7 @@ EventBroker.prototype.loadHandlerLocally = function(topic, event_class, match) {
 			'name' : match.handler,
 			'class' : event_class,
 			'id' : require.resolve(res),
-			'inst' : new HandlerType(topic, this)
+			'inst' : new HandlerType(topic, this, event_class)
 		};
 
 		this.cache_.put(match.uri, handler);

@@ -2,8 +2,8 @@ var ces = require('ces-node');
 var BaseHandler = ces.BaseHandler
 	, STW = ces.SlidingTimeWindow;
 
-function ExampleHandler(topic, broker){
-	BaseHandler.call(this, topic, broker);
+function ExampleHandler(topic, broker, event_class){
+	BaseHandler.call(this, topic, broker, event_class);
 
 	// TODO
 	// Add your own initialize functions here

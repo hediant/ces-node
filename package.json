@@ -1,7 +1,7 @@
 {
   "name": "ces-node",
   "description": "Calculation Engine Services",
-  "version": "0.0.12",
+  "version": "0.0.15",
   "private": false,
   "author": "David Hediant <hediant@gmail.com>",
   "contributors": [],
