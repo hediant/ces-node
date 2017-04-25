@@ -35,6 +35,14 @@ SequentialHandler.prototype.handleEvent_ = function(topic, fields) {
 	}
 };
 
+SequentialHandler.prototype.setBusyFlag = function() {
+	this.busy_ = true;
+}
+
+SequentialHandler.prototype.isBusy = function(){
+	return this.busy_;
+}
+
 SequentialHandler.prototype.nextEvent = function() {
 	var self = this;
 	if (this.queue_.length) {
